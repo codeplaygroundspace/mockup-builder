@@ -531,13 +531,6 @@ summary {
     outline-offset: 3px;
   }
 
-  .drop-frame--has-preview::after {
-    position: absolute;
-    inset: 0;
-    background: rgb(24 24 27 / 0.34);
-    content: "";
-  }
-
   .drop-frame__preview {
     position: absolute;
     inset: 0;

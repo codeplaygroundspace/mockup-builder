@@ -12,11 +12,22 @@ import { useState } from "react";
 
 import { Button } from "@/components/button";
 import { FrameTabPanel } from "@/components/frame-tab-panel";
+import { MediaDropFrame } from "@/components/media-drop-frame";
 import { Section } from "@/components/section";
 import { SegmentedControl } from "@/components/segmented-control";
 import { cn } from "@/lib/utils";
 
 const BUILD_MODES = ["Mockup", "Frame"] as const;
+
+type SelectedMedia = {
+  previewUrl: string;
+  name: string;
+};
+
+type StylePanelProps = {
+  selectedMedia: SelectedMedia | null;
+  onMediaFiles: (files: File[]) => void;
+};
 
 const STYLES: ReadonlyArray<{
   name: string;
@@ -37,7 +48,7 @@ const STYLES: ReadonlyArray<{
   { name: "Border", swatchClassName: "bg-zinc-50 border border-zinc-300" },
 ];
 
-export function StylePanel() {
+export function StylePanel({ selectedMedia, onMediaFiles }: StylePanelProps) {
   const [activeMode, setActiveMode] = useState<(typeof BUILD_MODES)[number]>("Mockup");
 
   return (
@@ -66,12 +77,16 @@ export function StylePanel() {
         onValueChange={(value) => setActiveMode(value as (typeof BUILD_MODES)[number])}
       />
 
-      {activeMode === "Mockup" ? <MockupTabPanel /> : <FrameTabPanel />}
+      {activeMode === "Mockup" ? (
+        <MockupTabPanel selectedMedia={selectedMedia} onMediaFiles={onMediaFiles} />
+      ) : (
+        <FrameTabPanel />
+      )}
     </aside>
   );
 }
 
-function MockupTabPanel() {
+function MockupTabPanel({ selectedMedia, onMediaFiles }: StylePanelProps) {
   return (
     <>
       <button
@@ -102,11 +117,17 @@ function MockupTabPanel() {
 
       <Section label="Media">
         <div className="panel-card media-picker-card">
-          <button type="button" aria-label="Choose media" className="media-picker-button">
-            <span aria-hidden className="media-picker-button__icon">
-              +
-            </span>
-          </button>
+          <MediaDropFrame
+            size="md"
+            primary="Drop Media"
+            secondary="Click To Choose"
+            interactive
+            ariaLabel="Drop media or click to choose"
+            previewUrl={selectedMedia?.previewUrl ?? null}
+            selectedName={selectedMedia?.name ?? null}
+            onFiles={onMediaFiles}
+            className="h-24 w-full rounded-xl"
+          />
           <p className="text-xs text-zinc-400">Drop media or click to choose</p>
         </div>
       </Section>

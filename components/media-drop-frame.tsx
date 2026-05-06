@@ -18,6 +18,8 @@ type MediaDropFrameProps = {
   interactive?: boolean;
   accept?: string;
   ariaLabel?: string;
+  previewUrl?: string | null;
+  selectedName?: string | null;
   onFiles?: (files: File[]) => void;
 };
 
@@ -30,27 +32,32 @@ export function MediaDropFrame({
   interactive = false,
   accept = "image/*",
   ariaLabel,
+  previewUrl,
+  selectedName,
   onFiles,
 }: MediaDropFrameProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragActive, setIsDragActive] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [selectedName, setSelectedName] = useState<string | null>(null);
+  const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
+  const [localSelectedName, setLocalSelectedName] = useState<string | null>(null);
+  const isPreviewControlled = previewUrl !== undefined;
+  const isSelectedNameControlled = selectedName !== undefined;
+  const displayedPreviewUrl = isPreviewControlled ? previewUrl : localPreviewUrl;
+  const displayedSelectedName = isSelectedNameControlled ? selectedName : localSelectedName;
 
   useEffect(() => {
     return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
+      if (localPreviewUrl) {
+        URL.revokeObjectURL(localPreviewUrl);
       }
     };
-  }, [previewUrl]);
+  }, [localPreviewUrl]);
 
   const frameClassName = cn(
     "drop-frame",
     `drop-frame--${size}`,
     interactive && "drop-frame--interactive",
     isDragActive && "is-drag-active",
-    previewUrl && "drop-frame--has-preview",
     className
   );
 
@@ -62,8 +69,10 @@ export function MediaDropFrame({
     }
 
     const [firstFile] = imageFiles;
-    setPreviewUrl(URL.createObjectURL(firstFile));
-    setSelectedName(firstFile.name);
+    if (!isPreviewControlled) {
+      setLocalPreviewUrl(URL.createObjectURL(firstFile));
+      setLocalSelectedName(firstFile.name);
+    }
     onFiles?.(imageFiles);
   }
 
@@ -94,25 +103,29 @@ export function MediaDropFrame({
     handleFiles(event.dataTransfer.files);
   }
 
+  const emptyContent = (
+    <span className="drop-frame__content">
+      <span className="drop-frame__icon">
+        <ImagePlus aria-hidden="true" />
+      </span>
+      <span className="drop-frame__primary">{primary}</span>
+      <span className="drop-frame__secondary">{displayedSelectedName ?? secondary}</span>
+    </span>
+  );
+
   const content = (
     <>
-      {previewUrl ? (
+      {displayedPreviewUrl ? (
         <Image
           className="drop-frame__preview"
-          src={previewUrl}
+          src={displayedPreviewUrl}
           alt=""
           fill
           sizes="78vw"
           unoptimized
         />
       ) : null}
-      <span className="drop-frame__content">
-        <span className="drop-frame__icon">
-          <ImagePlus aria-hidden="true" />
-        </span>
-        <span className="drop-frame__primary">{previewUrl ? "Image Selected" : primary}</span>
-        <span className="drop-frame__secondary">{selectedName ?? secondary}</span>
-      </span>
+      {displayedPreviewUrl ? null : emptyContent}
     </>
   );
 
