@@ -2,7 +2,6 @@ import {
   Aperture,
   Ban,
   Blocks,
-  Check,
   ChevronDown,
   CircleDashed,
   Droplet,
@@ -25,8 +24,6 @@ type Tile = {
 type Swatch = {
   label: string;
   className: string;
-  selected?: boolean;
-  badge?: boolean;
 };
 
 const EFFECTS: ReadonlyArray<Tile> = [
@@ -71,23 +68,19 @@ const MAGIC_SWATCHES: ReadonlyArray<Swatch> = [
   {
     label: "Clay",
     className: "bg-[linear-gradient(135deg,#5d452c,#8b7357_50%,#4a3827)]",
-    selected: true,
   },
   { label: "Sunset", className: "bg-[linear-gradient(180deg,#ffff62,#fb923c)]" },
   {
     label: "Haze",
     className: "bg-[radial-gradient(circle_at_30%_30%,#fff7d6,#c8b690_45%,#2f2a21)]",
-    badge: true,
   },
   {
     label: "Mocha",
     className: "bg-[radial-gradient(circle_at_38%_32%,#d1b58a,#3a2716_58%,#16110c)]",
-    badge: true,
   },
   {
     label: "Olive",
     className: "bg-[linear-gradient(135deg,#e9e5ba,#8f915f_55%,#55543f)]",
-    selected: true,
   },
   {
     label: "Pearl",
@@ -96,33 +89,14 @@ const MAGIC_SWATCHES: ReadonlyArray<Swatch> = [
   {
     label: "Sand",
     className: "bg-[radial-gradient(circle_at_75%_25%,#e7d8bd,#8d7356_45%,#31251c)]",
-    badge: true,
   },
   {
     label: "Chrome",
     className: "bg-[radial-gradient(circle_at_68%_30%,#f4f4f5,#8b8984_46%,#2a2722)]",
-    badge: true,
   },
   {
     label: "Mist",
     className: "bg-[linear-gradient(135deg,#e2e8f0,#a8a29e_55%,#5f554b)]",
-    selected: true,
-  },
-  { label: "Blank", className: "bg-zinc-50" },
-  {
-    label: "Fog",
-    className: "bg-[radial-gradient(circle_at_28%_35%,#f8fafc,#e7dfcf_42%,#78716c)]",
-    badge: true,
-  },
-  {
-    label: "Smoke",
-    className: "bg-[radial-gradient(circle_at_70%_35%,#f4f4f5,#d0c6b4_38%,#4b4238)]",
-    badge: true,
-  },
-  {
-    label: "Cedar",
-    className: "bg-[linear-gradient(135deg,#cbb294,#70533b_58%,#312116)]",
-    selected: true,
   },
 ];
 
@@ -132,6 +106,24 @@ const SWATCH_GROUPS: ReadonlyArray<{
   swatches: ReadonlyArray<Swatch>;
 }> = [
   {
+    title: "Solid",
+    swatches: [
+      { label: "Blank", className: "bg-zinc-50" },
+      {
+        label: "Fog",
+        className: "bg-[radial-gradient(circle_at_28%_35%,#f8fafc,#e7dfcf_42%,#78716c)]",
+      },
+      {
+        label: "Smoke",
+        className: "bg-[radial-gradient(circle_at_70%_35%,#f4f4f5,#d0c6b4_38%,#4b4238)]",
+      },
+      {
+        label: "Cedar",
+        className: "bg-[linear-gradient(135deg,#cbb294,#70533b_58%,#312116)]",
+      },
+    ],
+  },
+  {
     title: "Gradient",
     swatches: [
       { label: "Rouge", className: "bg-mockup-gradient" },
@@ -140,7 +132,6 @@ const SWATCH_GROUPS: ReadonlyArray<{
       {
         label: "Clay",
         className: "bg-[linear-gradient(135deg,#e4b6a7,#8b5f4a_58%,#443125)]",
-        selected: true,
       },
     ],
   },
@@ -175,7 +166,6 @@ const SWATCH_GROUPS: ReadonlyArray<{
       {
         label: "Night",
         className: "bg-[linear-gradient(135deg,#1e1b4b,#581c87,#111827)]",
-        selected: true,
       },
     ],
   },
@@ -195,7 +185,6 @@ const SWATCH_GROUPS: ReadonlyArray<{
       {
         label: "Mauve",
         className: "bg-[linear-gradient(135deg,#9ca3af,#4338ca,#4b5563)]",
-        selected: true,
       },
     ],
   },
@@ -230,7 +219,6 @@ const SWATCH_GROUPS: ReadonlyArray<{
       {
         label: "Copper",
         className: "bg-[linear-gradient(135deg,#0f172a,#92400e,#f97316)]",
-        selected: true,
       },
     ],
   },
@@ -243,7 +231,6 @@ const SWATCH_GROUPS: ReadonlyArray<{
       {
         label: "Dust",
         className: "bg-[linear-gradient(135deg,#d1d5db,#a16207,#78350f)]",
-        selected: true,
       },
     ],
   },
@@ -256,7 +243,6 @@ const SWATCH_GROUPS: ReadonlyArray<{
       {
         label: "Terra",
         className: "bg-[linear-gradient(135deg,#f8fafc,#b45309,#7f1d1d)]",
-        selected: true,
       },
     ],
   },
@@ -279,13 +265,20 @@ const SWATCH_GROUPS: ReadonlyArray<{
       {
         label: "Bark",
         className: "bg-[linear-gradient(135deg,#a16207,#78350f,#292524)]",
-        selected: true,
       },
     ],
   },
 ];
 
-export function FrameTabPanel() {
+type FrameTabPanelProps = {
+  frameBackgroundClassName: string;
+  onFrameBackgroundChange: (className: string) => void;
+};
+
+export function FrameTabPanel({
+  frameBackgroundClassName,
+  onFrameBackgroundChange,
+}: FrameTabPanelProps) {
   return (
     <div className="frame-tab-content">
       <button
@@ -343,7 +336,12 @@ export function FrameTabPanel() {
             <span className="magic-slider__fill" />
           </span>
         </button>
-        <SwatchGrid swatches={MAGIC_SWATCHES} dense />
+        <SwatchGrid
+          swatches={MAGIC_SWATCHES}
+          dense
+          selectedClassName={frameBackgroundClassName}
+          onSelect={onFrameBackgroundChange}
+        />
       </div>
 
       <div className="frame-library">
@@ -354,7 +352,11 @@ export function FrameTabPanel() {
               {group.title === "Glass" ? <span className="frame-badge">New</span> : null}
               {group.meta ? <span className="frame-library-group__meta">{group.meta}</span> : null}
             </div>
-            <SwatchGrid swatches={group.swatches} />
+            <SwatchGrid
+              swatches={group.swatches}
+              selectedClassName={frameBackgroundClassName}
+              onSelect={onFrameBackgroundChange}
+            />
           </div>
         ))}
       </div>
@@ -397,29 +399,32 @@ function FrameSourceButton({ label, icon, previewClassName }: Tile) {
   );
 }
 
-function SwatchGrid({ swatches, dense }: { swatches: ReadonlyArray<Swatch>; dense?: boolean }) {
+function SwatchGrid({
+  swatches,
+  dense,
+  selectedClassName,
+  onSelect,
+}: {
+  swatches: ReadonlyArray<Swatch>;
+  dense?: boolean;
+  selectedClassName: string;
+  onSelect: (className: string) => void;
+}) {
   return (
     <div className={cn("frame-swatch-grid", dense && "frame-swatch-grid--dense")}>
-      {swatches.map((swatch) => (
-        <button
-          key={swatch.label}
-          type="button"
-          aria-pressed={swatch.selected}
-          aria-label={swatch.label}
-          className={cn("frame-swatch", swatch.className, swatch.selected && "is-selected")}
-        >
-          {swatch.badge ? (
-            <span aria-hidden className="frame-swatch__badge">
-              +
-            </span>
-          ) : null}
-          {swatch.selected ? (
-            <span aria-hidden className="frame-swatch__check">
-              <Check className="size-4" />
-            </span>
-          ) : null}
-        </button>
-      ))}
+      {swatches.map((swatch) => {
+        const isSelected = swatch.className === selectedClassName;
+        return (
+          <button
+            key={swatch.label}
+            type="button"
+            aria-pressed={isSelected}
+            aria-label={swatch.label}
+            onClick={() => onSelect(swatch.className)}
+            className={cn("frame-swatch", swatch.className, isSelected && "is-selected")}
+          />
+        );
+      })}
     </div>
   );
 }
