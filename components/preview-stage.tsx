@@ -3,6 +3,7 @@ import type { RefObject } from "react";
 
 import { Button } from "@/components/button";
 import { MediaDropFrame } from "@/components/media-drop-frame";
+import { getFrameAspectRatio, type FramePreset } from "@/lib/frame-presets";
 import { cn } from "@/lib/utils";
 
 type SelectedMedia = {
@@ -14,6 +15,7 @@ type PreviewStageProps = {
   selectedMedia: SelectedMedia | null;
   onMediaFiles: (files: File[]) => void;
   frameBackgroundClassName: string;
+  framePreset: FramePreset;
   stageRef?: RefObject<HTMLDivElement | null>;
 };
 
@@ -21,8 +23,11 @@ export function PreviewStage({
   selectedMedia,
   onMediaFiles,
   frameBackgroundClassName,
+  framePreset,
   stageRef,
 }: PreviewStageProps) {
+  const frameAspectRatio = getFrameAspectRatio(framePreset);
+
   return (
     <main className="stage">
       <div className="command-bar">
@@ -48,6 +53,7 @@ export function PreviewStage({
 
       <div
         ref={stageRef}
+        style={{ aspectRatio: frameAspectRatio }}
         className={cn("mockup-surface mockup-surface--stage", frameBackgroundClassName)}
       >
         <MediaDropFrame
@@ -59,7 +65,10 @@ export function PreviewStage({
           previewUrl={selectedMedia?.previewUrl ?? null}
           selectedName={selectedMedia?.name ?? null}
           onFiles={onMediaFiles}
-          className="aspect-16/10 w-[78%] rounded-2xl shadow-2xl"
+          fitToContent
+          fitMaxPercent={78}
+          style={{ aspectRatio: frameAspectRatio }}
+          className="w-[78%] rounded-2xl shadow-2xl"
         />
       </div>
     </main>

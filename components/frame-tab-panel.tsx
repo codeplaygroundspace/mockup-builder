@@ -1,8 +1,9 @@
+"use client";
+
 import {
   Aperture,
   Ban,
   Blocks,
-  ChevronDown,
   CircleDashed,
   Droplet,
   Image as ImageIcon,
@@ -11,7 +12,9 @@ import {
   Sparkle,
 } from "lucide-react";
 
+import { FrameRatioDropdown } from "@/components/frame-ratio-dropdown";
 import { Section } from "@/components/section";
+import type { FramePreset } from "@/lib/frame-presets";
 import { cn } from "@/lib/utils";
 
 type Tile = {
@@ -273,26 +276,19 @@ const SWATCH_GROUPS: ReadonlyArray<{
 type FrameTabPanelProps = {
   frameBackgroundClassName: string;
   onFrameBackgroundChange: (className: string) => void;
+  framePreset: FramePreset;
+  onFramePresetChange: (preset: FramePreset) => void;
 };
 
 export function FrameTabPanel({
   frameBackgroundClassName,
   onFrameBackgroundChange,
+  framePreset,
+  onFramePresetChange,
 }: FrameTabPanelProps) {
   return (
     <div className="frame-tab-content">
-      <button
-        type="button"
-        aria-label="Frame size preset: Default 16:9"
-        className="source-button style-panel__tab-header frame-ratio-button"
-      >
-        <span aria-hidden className="frame-ratio-button__icon" />
-        <span className="frame-ratio-button__copy">
-          <span className="text-sm font-medium">Default 16:9</span>
-          <span className="text-xs text-zinc-500 tabular-nums">1920 x 1080</span>
-        </span>
-        <ChevronDown className="size-4 text-zinc-500" />
-      </button>
+      <FrameRatioDropdown framePreset={framePreset} onFramePresetChange={onFramePresetChange} />
 
       <Section label="Effects & Watermark">
         <div className="frame-option-grid frame-option-grid--two">
