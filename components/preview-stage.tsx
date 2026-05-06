@@ -3,7 +3,17 @@ import { Command, Maximize2, MessageSquareMore, Redo2, Undo2 } from "lucide-reac
 import { Button } from "@/components/button";
 import { MediaDropFrame } from "@/components/media-drop-frame";
 
-export function PreviewStage() {
+type SelectedMedia = {
+  previewUrl: string;
+  name: string;
+};
+
+type PreviewStageProps = {
+  selectedMedia: SelectedMedia | null;
+  onMediaFiles: (files: File[]) => void;
+};
+
+export function PreviewStage({ selectedMedia, onMediaFiles }: PreviewStageProps) {
   return (
     <main className="stage">
       <div className="command-bar">
@@ -34,6 +44,9 @@ export function PreviewStage() {
           secondary="Open Media Picker"
           interactive
           ariaLabel="Select an image"
+          previewUrl={selectedMedia?.previewUrl ?? null}
+          selectedName={selectedMedia?.name ?? null}
+          onFiles={onMediaFiles}
           className="aspect-16/10 w-[78%] rounded-2xl shadow-2xl"
         />
       </div>
