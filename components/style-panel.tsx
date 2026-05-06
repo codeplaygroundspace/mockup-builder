@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ChevronDown,
   ChevronLeft,
@@ -6,11 +8,15 @@ import {
   MoreHorizontal,
   Sparkles,
 } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/button";
+import { FrameTabPanel } from "@/components/frame-tab-panel";
 import { Section } from "@/components/section";
 import { SegmentedControl } from "@/components/segmented-control";
 import { cn } from "@/lib/utils";
+
+const BUILD_MODES = ["Mockup", "Frame"] as const;
 
 const STYLES: ReadonlyArray<{
   name: string;
@@ -21,7 +27,7 @@ const STYLES: ReadonlyArray<{
   { name: "Glass Light", swatchClassName: "bg-zinc-200/90" },
   { name: "Glass Dark", swatchClassName: "bg-zinc-700/90" },
   {
-    name: "Liquid…",
+    name: "Liquid...",
     swatchClassName:
       "bg-[conic-gradient(from_0deg,#ff7e5f,#feb47b,#ff7e5f)] [&>div]:bg-zinc-200/30",
   },
@@ -32,14 +38,16 @@ const STYLES: ReadonlyArray<{
 ];
 
 export function StylePanel() {
+  const [activeMode, setActiveMode] = useState<(typeof BUILD_MODES)[number]>("Mockup");
+
   return (
-    <aside className="app-panel">
-      <div className="panel-row">
-        <button aria-label="Workspace" className="workspace-button">
+    <aside className="app-panel style-panel">
+      <div className="panel-row style-panel__topbar">
+        <button type="button" aria-label="Workspace" className="workspace-button">
           <span className="workspace-avatar">MB</span>
           <ChevronRight className="size-4 text-zinc-400" />
         </button>
-        <button aria-label="Templates" className="template-button">
+        <button type="button" aria-label="Templates" className="template-button">
           <span className="template-button__label">
             <span aria-hidden className="template-button__icon">
               <Sparkles className="size-4" />
@@ -50,9 +58,27 @@ export function StylePanel() {
         </button>
       </div>
 
-      <SegmentedControl ariaLabel="Build mode" options={["Mockup", "Frame"]} value="Mockup" />
+      <SegmentedControl
+        ariaLabel="Build mode"
+        options={BUILD_MODES}
+        value={activeMode}
+        className="style-panel__tabs"
+        onValueChange={(value) => setActiveMode(value as (typeof BUILD_MODES)[number])}
+      />
 
-      <button aria-label="Source type: Screenshot" className="source-button">
+      {activeMode === "Mockup" ? <MockupTabPanel /> : <FrameTabPanel />}
+    </aside>
+  );
+}
+
+function MockupTabPanel() {
+  return (
+    <>
+      <button
+        type="button"
+        aria-label="Source type: Screenshot"
+        className="source-button style-panel__tab-header"
+      >
         <span aria-hidden className="source-button__thumb" />
         <span className="source-button__copy">
           <span className="text-sm font-medium">Screenshot</span>
@@ -76,7 +102,7 @@ export function StylePanel() {
 
       <Section label="Media">
         <div className="panel-card media-picker-card">
-          <button aria-label="Choose media" className="media-picker-button">
+          <button type="button" aria-label="Choose media" className="media-picker-button">
             <span aria-hidden className="media-picker-button__icon">
               +
             </span>
@@ -90,7 +116,7 @@ export function StylePanel() {
           {STYLES.map((style) => (
             <StyleSwatch key={style.name} {...style} />
           ))}
-          <button aria-label="More styles" className="more-tile">
+          <button type="button" aria-label="More styles" className="more-tile">
             <MoreHorizontal className="size-5" />
           </button>
         </div>
@@ -102,7 +128,7 @@ export function StylePanel() {
           Adjust shadow, blur, and reflection.
         </div>
       </Section>
-    </aside>
+    </>
   );
 }
 
@@ -116,7 +142,11 @@ function StyleSwatch({
   selected?: boolean;
 }) {
   return (
-    <button aria-pressed={selected} className={cn("style-swatch", selected && "is-selected")}>
+    <button
+      type="button"
+      aria-pressed={selected}
+      className={cn("style-swatch", selected && "is-selected")}
+    >
       <div className={cn("style-swatch__preview", selected && "ring-selected")}>
         <div className={cn("style-swatch__inner", swatchClassName)}>
           <div className="style-swatch__reflection" />

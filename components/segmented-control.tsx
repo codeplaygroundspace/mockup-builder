@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 
 type Variant = "filled" | "underline";
@@ -8,12 +10,14 @@ export function SegmentedControl({
   variant = "filled",
   className,
   ariaLabel,
+  onValueChange,
 }: {
   options: ReadonlyArray<string>;
   value: string;
   variant?: Variant;
   className?: string;
   ariaLabel?: string;
+  onValueChange?: (value: string) => void;
 }) {
   return (
     <div
@@ -30,10 +34,12 @@ export function SegmentedControl({
         const active = option === value;
         return (
           <button
+            type="button"
             key={option}
             role="radio"
             aria-checked={active}
             className={cn("segmented-control__option", active && "is-active")}
+            onClick={() => onValueChange?.(option)}
           >
             {option}
           </button>
