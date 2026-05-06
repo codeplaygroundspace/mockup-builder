@@ -22,6 +22,7 @@ type MediaDropFrameProps = {
   selectedName?: string | null;
   fitToContent?: boolean;
   fitMaxPercent?: number;
+  fitBounds?: { width: number; height: number } | null;
   onFiles?: (files: File[]) => void;
 };
 
@@ -38,6 +39,7 @@ export function MediaDropFrame({
   selectedName,
   fitToContent = false,
   fitMaxPercent = 100,
+  fitBounds,
   onFiles,
 }: MediaDropFrameProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -49,7 +51,10 @@ export function MediaDropFrame({
     previewUrl: string;
     aspectRatio: number;
   } | null>(null);
-  const [fitBounds, setFitBounds] = useState<{ width: number; height: number } | null>(null);
+  const [observedFitBounds, setObservedFitBounds] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
   const isPreviewControlled = previewUrl !== undefined;
   const isSelectedNameControlled = selectedName !== undefined;
   const displayedPreviewUrl = isPreviewControlled ? previewUrl : localPreviewUrl;
@@ -91,7 +96,7 @@ export function MediaDropFrame({
   }, [fitToContent, displayedPreviewUrl]);
 
   useEffect(() => {
-    if (!fitToContent || !displayedPreviewUrl) {
+    if (!fitToContent || !displayedPreviewUrl || fitBounds) {
       return;
     }
 
@@ -107,7 +112,7 @@ export function MediaDropFrame({
         return;
       }
 
-      setFitBounds((currentBounds) => {
+      setObservedFitBounds((currentBounds) => {
         if (currentBounds?.width === width && currentBounds.height === height) {
           return currentBounds;
         }
@@ -121,11 +126,12 @@ export function MediaDropFrame({
     return () => {
       resizeObserver.disconnect();
     };
-  }, [fitToContent, displayedPreviewUrl]);
+  }, [fitToContent, displayedPreviewUrl, fitBounds]);
 
+  const resolvedFitBounds = fitBounds ?? observedFitBounds;
   const fitDimensions =
-    fitToContent && imgAspectRatio !== null && fitBounds !== null
-      ? getContainedDimensions(imgAspectRatio, fitBounds, fitMaxPercent)
+    fitToContent && imgAspectRatio !== null && resolvedFitBounds !== null
+      ? getContainedDimensions(imgAspectRatio, resolvedFitBounds, fitMaxPercent)
       : null;
 
   const frameClassName = cn(
