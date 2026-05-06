@@ -4,7 +4,7 @@ import { toPng } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ExportPanel } from "@/components/export-panel";
-import { PreviewStage } from "@/components/preview-stage";
+import { MockupSurface, PreviewStage } from "@/components/preview-stage";
 import { StylePanel } from "@/components/style-panel";
 import { DEFAULT_FRAME_PRESET } from "@/lib/frame-presets";
 
@@ -17,7 +17,7 @@ const DEFAULT_FRAME_BACKGROUND_CLASS = "bg-mockup-gradient";
 
 export function MockupBuilderShell() {
   const selectedPreviewUrlRef = useRef<string | null>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
   const [frameBackgroundClassName, setFrameBackgroundClassName] = useState<string>(
     DEFAULT_FRAME_BACKGROUND_CLASS
@@ -49,34 +49,79 @@ export function MockupBuilderShell() {
   }, []);
 
   const handleExport = useCallback(async () => {
-    const node = stageRef.current;
+    const node = exportRef.current;
     if (!node) return;
 
-    const dataUrl = await toPng(node, { cacheBust: false, pixelRatio: 1 });
+    await waitForExportRender(node);
+
+    const dataUrl = await toPng(node, {
+      cacheBust: false,
+      pixelRatio: 1,
+      width: framePreset.width,
+      height: framePreset.height,
+      canvasWidth: framePreset.width,
+      canvasHeight: framePreset.height,
+    });
     const link = document.createElement("a");
-    link.download = "mockup.png";
+    link.download = `${framePreset.width}x${framePreset.height}_1X_mockup_builder.png`;
     link.href = dataUrl;
     link.click();
-  }, []);
+  }, [framePreset.height, framePreset.width]);
 
   return (
-    <div className="app-shell">
-      <StylePanel
-        selectedMedia={selectedMedia}
-        onMediaFiles={handleMediaFiles}
-        frameBackgroundClassName={frameBackgroundClassName}
-        onFrameBackgroundChange={setFrameBackgroundClassName}
-        framePreset={framePreset}
-        onFramePresetChange={setFramePreset}
-      />
-      <PreviewStage
-        selectedMedia={selectedMedia}
-        onMediaFiles={handleMediaFiles}
-        frameBackgroundClassName={frameBackgroundClassName}
-        framePreset={framePreset}
-        stageRef={stageRef}
-      />
-      <ExportPanel onExport={handleExport} />
-    </div>
+    <>
+      <div className="app-shell">
+        <StylePanel
+          selectedMedia={selectedMedia}
+          onMediaFiles={handleMediaFiles}
+          frameBackgroundClassName={frameBackgroundClassName}
+          onFrameBackgroundChange={setFrameBackgroundClassName}
+          framePreset={framePreset}
+          onFramePresetChange={setFramePreset}
+        />
+        <PreviewStage
+          selectedMedia={selectedMedia}
+          onMediaFiles={handleMediaFiles}
+          frameBackgroundClassName={frameBackgroundClassName}
+          framePreset={framePreset}
+        />
+        <ExportPanel onExport={handleExport} />
+      </div>
+      <div aria-hidden="true" className="export-surface-host">
+        <MockupSurface
+          selectedMedia={selectedMedia}
+          frameBackgroundClassName={frameBackgroundClassName}
+          framePreset={framePreset}
+          surfaceRef={exportRef}
+          className="mockup-surface--export"
+          style={{ width: `${framePreset.width}px`, height: `${framePreset.height}px` }}
+          fitBounds={{ width: framePreset.width, height: framePreset.height }}
+        />
+      </div>
+    </>
   );
+}
+
+async function waitForExportRender(node: HTMLElement) {
+  await nextAnimationFrame();
+
+  const images = Array.from(node.querySelectorAll("img"));
+  await Promise.all(
+    images.map((image) =>
+      image.complete
+        ? Promise.resolve()
+        : new Promise<void>((resolve) => {
+            image.addEventListener("load", () => resolve(), { once: true });
+            image.addEventListener("error", () => resolve(), { once: true });
+          })
+    )
+  );
+
+  await nextAnimationFrame();
+}
+
+function nextAnimationFrame() {
+  return new Promise<void>((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+  });
 }
