@@ -497,7 +497,7 @@ summary {
     justify-content: center;
     overflow: hidden;
     border: 0;
-    background: rgb(var(--color-panel-muted) / 0.95);
+    background: rgb(var(--color-panel-muted));
     color: rgb(var(--color-text-muted));
     font: inherit;
     text-align: center;

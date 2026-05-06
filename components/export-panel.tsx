@@ -17,12 +17,17 @@ const LAYOUT_PRESETS: ReadonlyArray<{
   { rotate: 0, scale: 0.85 },
 ];
 
-export function ExportPanel() {
+type ExportPanelProps = {
+  onExport?: () => void;
+};
+
+export function ExportPanel({ onExport }: ExportPanelProps) {
   return (
     <aside className="app-panel">
       <div className="panel-row">
         <Button
           variant="secondary"
+          onClick={onExport}
           className="flex-1 justify-start rounded-2xl bg-zinc-900 hover:bg-zinc-800"
         >
           <Upload className="size-4" />
@@ -56,7 +61,7 @@ export function ExportPanel() {
           size="md"
           primary="Drop or Paste"
           secondary="Images & Videos"
-          className="aspect-[4/3] w-[72%] rounded-xl"
+          className="aspect-4/3 w-[72%] rounded-xl"
         />
       </div>
 
@@ -122,7 +127,7 @@ function LayoutPresetCard({
         size="md"
         primary="Drop or Paste"
         secondary="Images & Videos"
-        className="aspect-[4/3] w-[68%] rounded-lg shadow-md"
+        className="aspect-4/3 w-[68%] rounded-lg shadow-md"
         style={{ transform: `rotate(${rotate}deg) scale(${scale})` }}
       />
     </button>

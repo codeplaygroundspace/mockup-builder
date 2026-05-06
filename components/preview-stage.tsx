@@ -1,4 +1,5 @@
 import { Command, Maximize2, MessageSquareMore, Redo2, Undo2 } from "lucide-react";
+import type { RefObject } from "react";
 
 import { Button } from "@/components/button";
 import { MediaDropFrame } from "@/components/media-drop-frame";
@@ -13,12 +14,14 @@ type PreviewStageProps = {
   selectedMedia: SelectedMedia | null;
   onMediaFiles: (files: File[]) => void;
   frameBackgroundClassName: string;
+  stageRef?: RefObject<HTMLDivElement | null>;
 };
 
 export function PreviewStage({
   selectedMedia,
   onMediaFiles,
   frameBackgroundClassName,
+  stageRef,
 }: PreviewStageProps) {
   return (
     <main className="stage">
@@ -43,7 +46,10 @@ export function PreviewStage({
         </Button>
       </div>
 
-      <div className={cn("mockup-surface mockup-surface--stage", frameBackgroundClassName)}>
+      <div
+        ref={stageRef}
+        className={cn("mockup-surface mockup-surface--stage", frameBackgroundClassName)}
+      >
         <MediaDropFrame
           size="lg"
           primary="Select Media"
