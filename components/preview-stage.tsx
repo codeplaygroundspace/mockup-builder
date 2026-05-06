@@ -2,6 +2,7 @@ import { Command, Maximize2, MessageSquareMore, Redo2, Undo2 } from "lucide-reac
 
 import { Button } from "@/components/button";
 import { MediaDropFrame } from "@/components/media-drop-frame";
+import { cn } from "@/lib/utils";
 
 type SelectedMedia = {
   previewUrl: string;
@@ -11,9 +12,14 @@ type SelectedMedia = {
 type PreviewStageProps = {
   selectedMedia: SelectedMedia | null;
   onMediaFiles: (files: File[]) => void;
+  frameBackgroundClassName: string;
 };
 
-export function PreviewStage({ selectedMedia, onMediaFiles }: PreviewStageProps) {
+export function PreviewStage({
+  selectedMedia,
+  onMediaFiles,
+  frameBackgroundClassName,
+}: PreviewStageProps) {
   return (
     <main className="stage">
       <div className="command-bar">
@@ -37,7 +43,7 @@ export function PreviewStage({ selectedMedia, onMediaFiles }: PreviewStageProps)
         </Button>
       </div>
 
-      <div className="mockup-surface mockup-surface--stage bg-mockup-gradient">
+      <div className={cn("mockup-surface mockup-surface--stage", frameBackgroundClassName)}>
         <MediaDropFrame
           size="lg"
           primary="Select Media"

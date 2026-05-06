@@ -27,6 +27,8 @@ type SelectedMedia = {
 type StylePanelProps = {
   selectedMedia: SelectedMedia | null;
   onMediaFiles: (files: File[]) => void;
+  frameBackgroundClassName: string;
+  onFrameBackgroundChange: (className: string) => void;
 };
 
 const STYLES: ReadonlyArray<{
@@ -48,7 +50,12 @@ const STYLES: ReadonlyArray<{
   { name: "Border", swatchClassName: "bg-zinc-50 border border-zinc-300" },
 ];
 
-export function StylePanel({ selectedMedia, onMediaFiles }: StylePanelProps) {
+export function StylePanel({
+  selectedMedia,
+  onMediaFiles,
+  frameBackgroundClassName,
+  onFrameBackgroundChange,
+}: StylePanelProps) {
   const [activeMode, setActiveMode] = useState<(typeof BUILD_MODES)[number]>("Mockup");
 
   return (
@@ -80,13 +87,19 @@ export function StylePanel({ selectedMedia, onMediaFiles }: StylePanelProps) {
       {activeMode === "Mockup" ? (
         <MockupTabPanel selectedMedia={selectedMedia} onMediaFiles={onMediaFiles} />
       ) : (
-        <FrameTabPanel />
+        <FrameTabPanel
+          frameBackgroundClassName={frameBackgroundClassName}
+          onFrameBackgroundChange={onFrameBackgroundChange}
+        />
       )}
     </aside>
   );
 }
 
-function MockupTabPanel({ selectedMedia, onMediaFiles }: StylePanelProps) {
+function MockupTabPanel({
+  selectedMedia,
+  onMediaFiles,
+}: Pick<StylePanelProps, "selectedMedia" | "onMediaFiles">) {
   return (
     <>
       <button

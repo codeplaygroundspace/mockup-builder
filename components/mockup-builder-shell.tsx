@@ -11,9 +11,14 @@ type SelectedMedia = {
   name: string;
 };
 
+const DEFAULT_FRAME_BACKGROUND_CLASS = "bg-mockup-gradient";
+
 export function MockupBuilderShell() {
   const selectedPreviewUrlRef = useRef<string | null>(null);
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
+  const [frameBackgroundClassName, setFrameBackgroundClassName] = useState<string>(
+    DEFAULT_FRAME_BACKGROUND_CLASS
+  );
 
   const handleMediaFiles = useCallback((files: File[]) => {
     const [file] = files;
@@ -41,8 +46,17 @@ export function MockupBuilderShell() {
 
   return (
     <div className="app-shell">
-      <StylePanel selectedMedia={selectedMedia} onMediaFiles={handleMediaFiles} />
-      <PreviewStage selectedMedia={selectedMedia} onMediaFiles={handleMediaFiles} />
+      <StylePanel
+        selectedMedia={selectedMedia}
+        onMediaFiles={handleMediaFiles}
+        frameBackgroundClassName={frameBackgroundClassName}
+        onFrameBackgroundChange={setFrameBackgroundClassName}
+      />
+      <PreviewStage
+        selectedMedia={selectedMedia}
+        onMediaFiles={handleMediaFiles}
+        frameBackgroundClassName={frameBackgroundClassName}
+      />
       <ExportPanel />
     </div>
   );
