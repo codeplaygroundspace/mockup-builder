@@ -1,5 +1,6 @@
 "use client";
 
+import { toPng } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ExportPanel } from "@/components/export-panel";
@@ -15,6 +16,7 @@ const DEFAULT_FRAME_BACKGROUND_CLASS = "bg-mockup-gradient";
 
 export function MockupBuilderShell() {
   const selectedPreviewUrlRef = useRef<string | null>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
   const [frameBackgroundClassName, setFrameBackgroundClassName] = useState<string>(
     DEFAULT_FRAME_BACKGROUND_CLASS
@@ -44,6 +46,17 @@ export function MockupBuilderShell() {
     };
   }, []);
 
+  const handleExport = useCallback(async () => {
+    const node = stageRef.current;
+    if (!node) return;
+
+    const dataUrl = await toPng(node, { cacheBust: true, pixelRatio: 1 });
+    const link = document.createElement("a");
+    link.download = "mockup.png";
+    link.href = dataUrl;
+    link.click();
+  }, []);
+
   return (
     <div className="app-shell">
       <StylePanel
@@ -56,8 +69,9 @@ export function MockupBuilderShell() {
         selectedMedia={selectedMedia}
         onMediaFiles={handleMediaFiles}
         frameBackgroundClassName={frameBackgroundClassName}
+        stageRef={stageRef}
       />
-      <ExportPanel />
+      <ExportPanel onExport={handleExport} />
     </div>
   );
 }
