@@ -16,6 +16,9 @@
   --color-text-muted: 161 161 170;
   --color-line: 39 39 42;
   --color-inverse: 24 24 27;
+  --color-tooltip: 24 24 27;
+  --color-tooltip-text: 244 244 245;
+  --shadow-tooltip: 0 4px 6px -1px rgb(0 0 0 / 0.2);
 }
 
 @utility bg-mockup-gradient {
@@ -240,6 +243,7 @@ summary {
   }
 
   .ui-button {
+    position: relative;
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
@@ -263,6 +267,37 @@ summary {
   .ui-button > svg {
     pointer-events: none;
     flex-shrink: 0;
+  }
+
+  .ui-button__tooltip {
+    pointer-events: none;
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    left: 50%;
+    z-index: 20;
+    max-width: 10rem;
+    transform: translate(-50%, -0.125rem);
+    border-radius: 0.375rem;
+    background: rgb(var(--color-tooltip));
+    padding: 0.25rem 0.5rem;
+    color: rgb(var(--color-tooltip-text));
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1rem;
+    white-space: nowrap;
+    opacity: 0;
+    box-shadow: var(--shadow-tooltip);
+    visibility: hidden;
+    transition-property: opacity, transform, visibility;
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
+  }
+
+  .ui-button:hover > .ui-button__tooltip,
+  .ui-button:focus-visible > .ui-button__tooltip {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    visibility: visible;
   }
 
   .ui-button--ghost {
@@ -418,12 +453,17 @@ summary {
   }
 
   .drop-frame {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    border: 0;
     background: rgb(var(--color-panel-muted) / 0.95);
     color: rgb(var(--color-text-muted));
+    font: inherit;
+    text-align: center;
     box-shadow:
       0 10px 15px -3px rgb(0 0 0 / 0.1),
       0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -431,7 +471,57 @@ summary {
     outline-offset: -1px;
   }
 
+  .drop-frame--interactive {
+    cursor: pointer;
+    transition:
+      color 150ms ease-out,
+      outline-color 150ms ease-out,
+      transform 150ms ease-out;
+  }
+
+  .drop-frame--interactive:hover,
+  .drop-frame--interactive.is-drag-active {
+    color: rgb(var(--color-text));
+    outline-color: rgb(244 244 245 / 0.35);
+  }
+
+  .drop-frame--interactive:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .drop-frame--interactive:focus-visible {
+    outline: 2px solid rgb(244 244 245 / 0.8);
+    outline-offset: 3px;
+  }
+
+  .drop-frame--has-preview::after {
+    position: absolute;
+    inset: 0;
+    background: rgb(24 24 27 / 0.34);
+    content: "";
+  }
+
+  .drop-frame__preview {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .drop-frame__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .drop-frame--lg {
+    gap: 0.75rem;
+  }
+
+  .drop-frame--lg .drop-frame__content {
     gap: 0.75rem;
   }
 
@@ -440,11 +530,25 @@ summary {
     gap: 0.25rem;
   }
 
+  .drop-frame--md .drop-frame__content,
+  .drop-frame--sm .drop-frame__content {
+    gap: 0.25rem;
+  }
+
   .drop-frame__icon {
     display: grid;
     place-items: center;
     background: rgb(244 244 245 / 0.95);
     color: rgb(var(--color-inverse));
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out,
+      transform 150ms ease-out;
+  }
+
+  .drop-frame--interactive:hover .drop-frame__icon,
+  .drop-frame--interactive.is-drag-active .drop-frame__icon {
+    transform: translateY(-1px);
   }
 
   .drop-frame--lg .drop-frame__icon {
