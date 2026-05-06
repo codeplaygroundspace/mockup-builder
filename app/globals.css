@@ -539,6 +539,10 @@ summary {
     object-fit: cover;
   }
 
+  .drop-frame--fit-to-content .drop-frame__preview {
+    object-fit: contain;
+  }
+
   .drop-frame__content {
     position: relative;
     z-index: 1;
@@ -814,12 +818,17 @@ summary {
     padding-bottom: 0.5rem;
   }
 
+  .frame-ratio-control {
+    width: 100%;
+    border-radius: 1rem;
+  }
+
   .frame-ratio-button {
+    width: 100%;
     border-radius: 1rem;
   }
 
   .frame-ratio-button__icon {
-    width: 2rem;
     height: 1.25rem;
     flex-shrink: 0;
     border: 1px solid rgb(244 244 245 / 0.9);
@@ -832,6 +841,93 @@ summary {
     min-width: 0;
     flex: 1;
     flex-direction: column;
+  }
+
+  .frame-ratio-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    left: 0;
+    z-index: 40;
+    border: 1px solid rgb(63 63 70);
+    border-radius: 1rem;
+    background: rgb(39 39 42);
+    padding: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.35);
+  }
+
+  .frame-ratio-menu__size-row {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgb(82 82 91);
+    padding-bottom: 0.75rem;
+  }
+
+  .frame-size-field {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    height: 2.25rem;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.625rem;
+    background: rgb(63 63 70);
+    padding-inline: 0.625rem;
+    color: rgb(161 161 170);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .frame-size-field > input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: rgb(212 212 216);
+    font: inherit;
+    text-align: right;
+    outline: none;
+  }
+
+  .frame-ratio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 1.125rem;
+    padding-top: 1.25rem;
+  }
+
+  .frame-ratio-option {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgb(161 161 170);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1rem;
+    transition-property: color;
+    transition-duration: 150ms;
+  }
+
+  .frame-ratio-option:hover,
+  .frame-ratio-option.is-selected {
+    color: rgb(244 244 245);
+  }
+
+  .frame-ratio-option__preview {
+    display: block;
+    width: min(100%, 4.875rem);
+    max-height: 5.25rem;
+    min-height: 2.75rem;
+    border: 1px solid rgb(82 82 91);
+    border-radius: 0.5rem;
+    background: rgb(63 63 70);
+  }
+
+  .frame-ratio-option.is-selected .frame-ratio-option__preview {
+    border-color: rgb(244 244 245);
+    box-shadow: 0 0 0 1px rgb(244 244 245 / 0.7);
   }
 
   .frame-option-grid {

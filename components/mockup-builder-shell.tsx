@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ExportPanel } from "@/components/export-panel";
 import { PreviewStage } from "@/components/preview-stage";
 import { StylePanel } from "@/components/style-panel";
+import { DEFAULT_FRAME_PRESET } from "@/lib/frame-presets";
 
 type SelectedMedia = {
   previewUrl: string;
@@ -21,6 +22,7 @@ export function MockupBuilderShell() {
   const [frameBackgroundClassName, setFrameBackgroundClassName] = useState<string>(
     DEFAULT_FRAME_BACKGROUND_CLASS
   );
+  const [framePreset, setFramePreset] = useState(DEFAULT_FRAME_PRESET);
 
   const handleMediaFiles = useCallback((files: File[]) => {
     const [file] = files;
@@ -50,7 +52,7 @@ export function MockupBuilderShell() {
     const node = stageRef.current;
     if (!node) return;
 
-    const dataUrl = await toPng(node, { cacheBust: true, pixelRatio: 1 });
+    const dataUrl = await toPng(node, { cacheBust: false, pixelRatio: 1 });
     const link = document.createElement("a");
     link.download = "mockup.png";
     link.href = dataUrl;
@@ -64,11 +66,14 @@ export function MockupBuilderShell() {
         onMediaFiles={handleMediaFiles}
         frameBackgroundClassName={frameBackgroundClassName}
         onFrameBackgroundChange={setFrameBackgroundClassName}
+        framePreset={framePreset}
+        onFramePresetChange={setFramePreset}
       />
       <PreviewStage
         selectedMedia={selectedMedia}
         onMediaFiles={handleMediaFiles}
         frameBackgroundClassName={frameBackgroundClassName}
+        framePreset={framePreset}
         stageRef={stageRef}
       />
       <ExportPanel onExport={handleExport} />
