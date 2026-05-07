@@ -1,0 +1,207 @@
+/* Media drop frames and mockup surfaces used by previews and export rendering. */
+
+@layer components {
+  .drop-frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 0;
+    background: rgb(var(--color-panel-muted));
+    color: rgb(var(--color-text-muted));
+    font: inherit;
+    text-align: center;
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1);
+    outline: 1px solid rgb(255 255 255 / 0.1);
+    outline-offset: -1px;
+  }
+
+  .drop-frame--interactive {
+    cursor: pointer;
+    transition:
+      color 150ms ease-out,
+      outline-color 150ms ease-out,
+      transform 150ms ease-out;
+  }
+
+  .drop-frame--interactive:hover,
+  .drop-frame--interactive.is-drag-active {
+    color: rgb(var(--color-text));
+    outline-color: rgb(244 244 245 / 0.35);
+  }
+
+  .drop-frame--interactive:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .drop-frame--interactive:focus-visible {
+    outline: 2px solid rgb(244 244 245 / 0.8);
+    outline-offset: 3px;
+  }
+
+  .drop-frame__preview {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .drop-frame--fit-to-content .drop-frame__preview {
+    object-fit: contain;
+  }
+
+  .drop-frame__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .drop-frame--lg {
+    gap: 0.75rem;
+  }
+
+  .drop-frame--lg .drop-frame__content {
+    gap: 0.75rem;
+  }
+
+  .drop-frame--md,
+  .drop-frame--sm {
+    gap: 0.25rem;
+  }
+
+  .drop-frame--md .drop-frame__content,
+  .drop-frame--sm .drop-frame__content {
+    gap: 0.25rem;
+  }
+
+  .drop-frame__icon {
+    display: grid;
+    place-items: center;
+    background: rgb(244 244 245 / 0.95);
+    color: rgb(var(--color-inverse));
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out,
+      transform 150ms ease-out;
+  }
+
+  .drop-frame--interactive:hover .drop-frame__icon,
+  .drop-frame--interactive.is-drag-active .drop-frame__icon {
+    transform: translateY(-1px);
+  }
+
+  .drop-frame--lg .drop-frame__icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+  }
+
+  .drop-frame--md .drop-frame__icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.5rem;
+  }
+
+  .drop-frame--sm .drop-frame__icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.375rem;
+  }
+
+  .drop-frame--lg .drop-frame__icon > svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .drop-frame--md .drop-frame__icon > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .drop-frame--sm .drop-frame__icon > svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .drop-frame__primary {
+    color: rgb(var(--color-text));
+  }
+
+  .drop-frame--lg .drop-frame__primary {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 500;
+  }
+
+  .drop-frame--md .drop-frame__primary {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+  }
+
+  .drop-frame--sm .drop-frame__primary {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .drop-frame__secondary {
+    color: rgb(113 113 122);
+  }
+
+  .drop-frame--lg .drop-frame__secondary {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .drop-frame--md .drop-frame__secondary {
+    font-size: 0.625rem;
+    line-height: 1rem;
+  }
+
+  .drop-frame--sm .drop-frame__secondary {
+    font-size: 0.5rem;
+    line-height: 0.75rem;
+  }
+
+  .mockup-surface {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .mockup-surface--stage {
+    aspect-ratio: 16 / 10;
+    max-width: 76.8rem;
+    border-radius: 1.5rem;
+  }
+
+  .mockup-surface--export {
+    flex-shrink: 0;
+  }
+
+  .export-surface-host {
+    position: fixed;
+    top: 0;
+    left: -100000px;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .mockup-surface--panel {
+    aspect-ratio: 4 / 3;
+    border-radius: 1rem;
+    outline: 1px solid rgb(var(--color-line));
+    outline-offset: -1px;
+  }
+}
