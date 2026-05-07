@@ -6,19 +6,9 @@ import type { FrameBackgroundSwatch } from "@/components/frame-tab-panel/types";
 import { MediaDropFrame } from "@/components/media-drop-frame";
 import { Panel, PanelRow, PanelSection, PanelStack } from "@/components/panel";
 import { SegmentedControl } from "@/components/segmented-control";
+import { LAYOUT_PRESETS, type LayoutPreset } from "@/lib/layout-presets";
 import { EXPORT_PANEL_MEDIA_WIDTH, LAYOUT_PRESET_MEDIA_WIDTH } from "@/lib/mockup-layout";
 import { cn } from "@/lib/utils";
-
-const LAYOUT_PRESETS: ReadonlyArray<{
-  rotate: number;
-  scale: number;
-  selected?: boolean;
-}> = [
-  { rotate: 0, scale: 0.78, selected: true },
-  { rotate: -8, scale: 0.72 },
-  { rotate: 6, scale: 0.7 },
-  { rotate: 0, scale: 0.85 },
-];
 
 type ExportPanelProps = {
   frameBackground: FrameBackgroundSwatch;
@@ -121,10 +111,7 @@ function LayoutPresetCard({
   selected,
 }: {
   frameBackground: FrameBackgroundSwatch;
-  rotate: number;
-  scale: number;
-  selected?: boolean;
-}) {
+} & LayoutPreset) {
   const frameBackgroundStyle = getFrameBackgroundStyle(frameBackground);
 
   return (
