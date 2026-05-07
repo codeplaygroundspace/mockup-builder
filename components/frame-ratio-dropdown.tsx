@@ -3,12 +3,8 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 
-import {
-  FRAME_PRESETS,
-  getFrameAspectRatio,
-  getFrameDimensionsLabel,
-  type FramePreset,
-} from "@/lib/frame-presets";
+import { getFrameAspectRatio, getFrameDimensionsLabel } from "@/components/frame-preset-ui";
+import { FRAME_PRESETS, type FramePreset } from "@/lib/frame-presets";
 import { cn } from "@/lib/utils";
 
 type FrameRatioDropdownProps = {
@@ -48,10 +44,7 @@ export function FrameRatioDropdown({ framePreset, onFramePresetChange }: FrameRa
   }, [isRatioMenuOpen]);
 
   return (
-    <div
-      ref={ratioControlRef}
-      className="style-panel__tab-header frame-ratio-control bg-[linear-gradient(0deg,rgb(var(--color-panel)/0)_0%,rgb(var(--color-panel)/1)_80%),linear-gradient(0deg,rgb(var(--color-panel)/0)_0%,rgb(var(--color-panel)/1)_80%)]"
-    >
+    <div ref={ratioControlRef} className="frame-ratio-control">
       <button
         type="button"
         aria-label={`Frame size preset: ${framePreset.name}`}

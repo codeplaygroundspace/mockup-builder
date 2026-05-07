@@ -2,8 +2,9 @@ import type { CSSProperties, RefObject } from "react";
 
 import { getFrameBackgroundStyle } from "@/components/frame-tab-panel/frame-background-groups";
 import type { FrameBackgroundSwatch } from "@/components/frame-tab-panel/types";
+import { getFrameAspectRatio } from "@/components/frame-preset-ui";
 import { MediaDropFrame } from "@/components/media-drop-frame";
-import { getFrameAspectRatio, type FramePreset } from "@/lib/frame-presets";
+import type { FramePreset } from "@/lib/frame-presets";
 import type { Dimensions, SelectedMedia } from "@/lib/media-types";
 import { MOCKUP_MEDIA_FIT_PERCENT, MOCKUP_MEDIA_PREVIEW_SIZES } from "@/lib/mockup-layout";
 import { cn } from "@/lib/utils";

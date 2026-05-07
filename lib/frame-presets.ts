@@ -73,11 +73,3 @@ export const FRAME_PRESETS: ReadonlyArray<FramePreset> = [
     height: 1920,
   },
 ];
-
-export function getFrameAspectRatio(preset: FramePreset) {
-  return `${preset.width} / ${preset.height}`;
-}
-
-export function getFrameDimensionsLabel(preset: FramePreset) {
-  return `${preset.width} x ${preset.height}`;
-}
