@@ -5,7 +5,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { ExportPanel } from "@/components/export-panel";
 import {
   DEFAULT_FRAME_BACKGROUND_ID,
-  getFrameBackgroundSwatchById,
+  getCachedFrameBackground,
 } from "@/components/frame-tab-panel/frame-background-groups";
 import { ExportMockupSurface } from "@/components/mockup-surfaces";
 import { PreviewStage } from "@/components/preview-stage";
@@ -21,9 +21,7 @@ export function MockupBuilderShell() {
   const selectedPreviewUrl = useObjectUrl(selectedFile);
   const [frameBackgroundId, setFrameBackgroundId] = useState<string>(DEFAULT_FRAME_BACKGROUND_ID);
   const [framePreset, setFramePreset] = useState(DEFAULT_FRAME_PRESET);
-  const frameBackground =
-    getFrameBackgroundSwatchById(frameBackgroundId) ??
-    getFrameBackgroundSwatchById(DEFAULT_FRAME_BACKGROUND_ID)!;
+  const frameBackground = getCachedFrameBackground(frameBackgroundId);
   const selectedMedia = useMemo<SelectedMedia | null>(() => {
     if (!selectedFile || !selectedPreviewUrl) {
       return null;

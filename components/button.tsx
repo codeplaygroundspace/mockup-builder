@@ -3,18 +3,21 @@ import { cn } from "@/lib/utils";
 const VARIANTS = {
   ghost: "ui-button--ghost",
   secondary: "ui-button--secondary",
-} as const;
+} as const satisfies Record<string, string>;
 
 const SIZES = {
   sm: "ui-button--sm",
   md: "ui-button--md",
   "icon-sm": "ui-button--icon-sm",
   "icon-md": "ui-button--icon-md",
-} as const;
+} as const satisfies Record<string, string>;
+
+type ButtonVariant = keyof typeof VARIANTS;
+type ButtonSize = keyof typeof SIZES;
 
 type Props = React.ComponentProps<"button"> & {
-  variant?: keyof typeof VARIANTS;
-  size?: keyof typeof SIZES;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   tooltip?: string;
 };
 

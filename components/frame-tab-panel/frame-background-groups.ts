@@ -6,21 +6,41 @@ export const DEFAULT_FRAME_BACKGROUND_ID = "bg-frame-gradient-rouge";
 
 const SHARED_IMAGE_SWATCH_URL =
   "https://images.unsplash.com/photo-1705447551093-7f1f038a313b?q=80&w=1139&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3";
+let frameBackgroundCache: Map<string, FrameBackgroundSwatch> | null = null;
 
 export function getFrameBackgroundSwatchId(swatch: FrameBackgroundSwatch) {
   return swatch.id ?? swatch.className ?? swatch.label;
 }
 
-export function getFrameBackgroundSwatchById(id: string) {
-  for (const group of FRAME_BACKGROUND_GROUPS) {
-    const swatch = group.swatches.find((item) => getFrameBackgroundSwatchId(item) === id);
+export function getFrameBackgroundSwatchById(id: string): FrameBackgroundSwatch | null {
+  return getFrameBackgroundCache().get(id) ?? null;
+}
 
-    if (swatch) {
-      return swatch;
+export function getCachedFrameBackground(id: string): FrameBackgroundSwatch {
+  const swatch =
+    getFrameBackgroundSwatchById(id) ?? getFrameBackgroundSwatchById(DEFAULT_FRAME_BACKGROUND_ID);
+
+  if (!swatch) {
+    throw new Error(`Default frame background "${DEFAULT_FRAME_BACKGROUND_ID}" was not found.`);
+  }
+
+  return swatch;
+}
+
+function getFrameBackgroundCache() {
+  if (frameBackgroundCache) {
+    return frameBackgroundCache;
+  }
+
+  frameBackgroundCache = new Map<string, FrameBackgroundSwatch>();
+
+  for (const group of FRAME_BACKGROUND_GROUPS) {
+    for (const swatch of group.swatches) {
+      frameBackgroundCache.set(getFrameBackgroundSwatchId(swatch), swatch);
     }
   }
 
-  return null;
+  return frameBackgroundCache;
 }
 
 export function getFrameBackgroundStyle(swatch: FrameBackgroundSwatch): CSSProperties | undefined {

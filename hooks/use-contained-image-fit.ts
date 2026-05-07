@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
+import { getContainedDimensions } from "@/lib/image-fit-utils";
 import type { Dimensions } from "@/lib/media-types";
 
 type UseContainedImageFitOptions = {
@@ -107,17 +108,4 @@ export function useContainedImageFit({
     fitStyle,
     setFrameElement,
   };
-}
-
-function getContainedDimensions(aspectRatio: number, bounds: Dimensions, maxPercent: number) {
-  const scale = maxPercent / 100;
-  const maxWidth = bounds.width * scale;
-  const maxHeight = bounds.height * scale;
-  const widthFromMaxHeight = maxHeight * aspectRatio;
-
-  if (widthFromMaxHeight <= maxWidth) {
-    return { width: widthFromMaxHeight, height: maxHeight };
-  }
-
-  return { width: maxWidth, height: maxWidth / aspectRatio };
 }
