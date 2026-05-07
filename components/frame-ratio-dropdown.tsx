@@ -48,7 +48,10 @@ export function FrameRatioDropdown({ framePreset, onFramePresetChange }: FrameRa
   }, [isRatioMenuOpen]);
 
   return (
-    <div ref={ratioControlRef} className="style-panel__tab-header frame-ratio-control">
+    <div
+      ref={ratioControlRef}
+      className="style-panel__tab-header frame-ratio-control bg-[linear-gradient(0deg,rgb(var(--color-panel)/0)_0%,rgb(var(--color-panel)/1)_80%),linear-gradient(0deg,rgb(var(--color-panel)/0)_0%,rgb(var(--color-panel)/1)_80%)]"
+    >
       <button
         type="button"
         aria-label={`Frame size preset: ${framePreset.name}`}
