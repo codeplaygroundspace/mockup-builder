@@ -1,0 +1,22 @@
+/* Theme tokens shared by Tailwind utilities and product CSS. */
+
+@theme {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --gradient-mockup: linear-gradient(135deg, #ff533b 0%, #f50472 50%, #872af2 100%);
+}
+
+:root {
+  --color-canvas: 9 9 11;
+  --color-panel: 28 28 28;
+  --color-panel-muted: 24 24 27;
+  --color-panel-active: 39 39 42;
+  --color-text: 244 244 245;
+  --color-text-muted: 161 161 170;
+  --color-line: 39 39 42;
+  --color-inverse: 24 24 27;
+  --color-tooltip: 24 24 27;
+  --color-tooltip-text: 244 244 245;
+  --shadow-tooltip: 0 4px 6px -1px rgb(0 0 0 / 0.2);
+}

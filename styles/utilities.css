@@ -1,0 +1,5 @@
+/* Generic one-off utilities shared across unrelated UI areas. */
+
+@utility ring-selected {
+  @apply ring-2 ring-zinc-100 ring-offset-2 ring-offset-zinc-950;
+}

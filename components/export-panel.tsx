@@ -56,7 +56,7 @@ export function ExportPanel({ onExport }: ExportPanelProps) {
         className="justify-start"
       />
 
-      <div className="mockup-surface mockup-surface--panel bg-mockup-gradient">
+      <div className="mockup-surface mockup-surface--panel bg-frame-gradient-rouge">
         <MediaDropFrame
           size="md"
           primary="Drop or Paste"
@@ -119,7 +119,7 @@ function LayoutPresetCard({
       aria-pressed={selected}
       aria-label="Layout preset"
       className={cn(
-        "layout-preset-card bg-mockup-gradient",
+        "layout-preset-card bg-frame-gradient-rouge",
         selected ? "ring-selected" : "ring-1 ring-zinc-800 hover:ring-zinc-700"
       )}
     >

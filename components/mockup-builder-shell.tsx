@@ -10,7 +10,7 @@ import { DEFAULT_FRAME_PRESET } from "@/lib/frame-presets";
 import { exportMockupPng } from "@/lib/mockup-export";
 import type { SelectedMedia } from "@/lib/media-types";
 
-const DEFAULT_FRAME_BACKGROUND_CLASS = "bg-mockup-gradient";
+const DEFAULT_FRAME_BACKGROUND_CLASS = "bg-frame-gradient-rouge";
 
 export function MockupBuilderShell() {
   const selectedPreviewUrlRef = useRef<string | null>(null);
