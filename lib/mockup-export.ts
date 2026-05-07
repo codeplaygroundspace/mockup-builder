@@ -2,6 +2,7 @@ import { toPng } from "html-to-image";
 
 import type { FramePreset } from "@/lib/frame-presets";
 import { MOCKUP_EXPORT_BASENAME, MOCKUP_EXPORT_SCALE } from "@/lib/mockup-layout";
+import { nextAnimationFrame, waitForImageLoad } from "@/lib/render-utils";
 
 type ExportMockupPngOptions = {
   node: HTMLElement;
@@ -28,19 +29,13 @@ export function getMockupExportFileName(framePreset: FramePreset) {
 }
 
 async function waitForExportRender(node: HTMLElement) {
+  // The first double-rAF lets React paint the export surface. Image loading can
+  // update layout or pixels afterward, so wait for all images and then give the
+  // browser one more paint/composite boundary before html-to-image snapshots it.
   await nextAnimationFrame();
 
   const images = Array.from(node.querySelectorAll("img"));
-  await Promise.all(
-    images.map((image) =>
-      image.complete
-        ? Promise.resolve()
-        : new Promise<void>((resolve) => {
-            image.addEventListener("load", () => resolve(), { once: true });
-            image.addEventListener("error", () => resolve(), { once: true });
-          })
-    )
-  );
+  await Promise.all(images.map(waitForImageLoad));
 
   await nextAnimationFrame();
 }
@@ -50,10 +45,4 @@ function downloadDataUrl(dataUrl: string, fileName: string) {
   link.download = fileName;
   link.href = dataUrl;
   link.click();
-}
-
-function nextAnimationFrame() {
-  return new Promise<void>((resolve) => {
-    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-  });
 }
