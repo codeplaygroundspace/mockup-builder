@@ -6,16 +6,31 @@ import type { FrameBackgroundSwatch } from "@/components/frame-tab-panel/types";
 import { MediaDropFrame } from "@/components/media-drop-frame";
 import { Panel, PanelRow, PanelSection, PanelStack } from "@/components/panel";
 import { SegmentedControl } from "@/components/segmented-control";
-import { LAYOUT_PRESETS, type LayoutPreset } from "@/lib/layout-presets";
-import { EXPORT_PANEL_MEDIA_WIDTH, LAYOUT_PRESET_MEDIA_WIDTH } from "@/lib/mockup-layout";
+import {
+  getLayoutPresetTransform,
+  LAYOUT_PRESETS,
+  type LayoutPreset,
+  type LayoutPresetId,
+} from "@/lib/layout-presets";
+import type { SelectedMedia } from "@/lib/media-types";
+import { EXPORT_PANEL_MEDIA_WIDTH, MOCKUP_MEDIA_FIT_PERCENT } from "@/lib/mockup-layout";
 import { cn } from "@/lib/utils";
 
 type ExportPanelProps = {
+  selectedMedia: SelectedMedia | null;
   frameBackground: FrameBackgroundSwatch;
+  selectedLayoutPresetId: LayoutPresetId;
+  onLayoutPresetChange: (presetId: LayoutPresetId) => void;
   onExport?: () => void;
 };
 
-export function ExportPanel({ frameBackground, onExport }: ExportPanelProps) {
+export function ExportPanel({
+  selectedMedia,
+  frameBackground,
+  selectedLayoutPresetId,
+  onLayoutPresetChange,
+  onExport,
+}: ExportPanelProps) {
   const frameBackgroundStyle = getFrameBackgroundStyle(frameBackground);
 
   return (
@@ -74,8 +89,15 @@ export function ExportPanel({ frameBackground, onExport }: ExportPanelProps) {
 
       <PanelSection label="Layout Presets">
         <PanelStack>
-          {LAYOUT_PRESETS.map((preset, index) => (
-            <LayoutPresetCard key={index} frameBackground={frameBackground} {...preset} />
+          {LAYOUT_PRESETS.map((preset) => (
+            <LayoutPresetCard
+              key={preset.id}
+              preset={preset}
+              selectedMedia={selectedMedia}
+              frameBackground={frameBackground}
+              selected={preset.id === selectedLayoutPresetId}
+              onSelect={onLayoutPresetChange}
+            />
           ))}
         </PanelStack>
       </PanelSection>
@@ -105,20 +127,36 @@ function LayoutModeOption({
 }
 
 function LayoutPresetCard({
+  preset,
+  selectedMedia,
   frameBackground,
-  rotate,
-  scale,
   selected,
+  onSelect,
 }: {
+  preset: LayoutPreset;
+  selectedMedia: SelectedMedia | null;
   frameBackground: FrameBackgroundSwatch;
-} & LayoutPreset) {
+  selected: boolean;
+  onSelect: (presetId: LayoutPresetId) => void;
+}) {
   const frameBackgroundStyle = getFrameBackgroundStyle(frameBackground);
+  const transform = getLayoutPresetTransform(preset);
+  const mediaFrameStyle = {
+    width: `${MOCKUP_MEDIA_FIT_PERCENT}%`,
+    height: "auto",
+    transform,
+    transformOrigin: "center center",
+    transition: "transform 0.125s linear",
+    willChange: "transform",
+    zIndex: 1,
+  };
 
   return (
     <button
       type="button"
       aria-pressed={selected}
-      aria-label="Layout preset"
+      aria-label={`Layout preset: ${preset.label}`}
+      onClick={() => onSelect(preset.id)}
       style={frameBackgroundStyle}
       className={cn(
         "layout-preset-card",
@@ -126,13 +164,25 @@ function LayoutPresetCard({
         selected ? "ring-selected" : "ring-1 ring-zinc-800 hover:ring-zinc-700"
       )}
     >
-      <MediaDropFrame
-        size="md"
-        primary="Drop or Paste"
-        secondary="Images & Videos"
-        className={cn("aspect-4/3 rounded-lg shadow-md", LAYOUT_PRESET_MEDIA_WIDTH)}
-        style={{ transform: `rotate(${rotate}deg) scale(${scale})` }}
-      />
+      {selectedMedia ? (
+        <MediaDropFrame
+          size="md"
+          primary=""
+          secondary=""
+          previewUrl={selectedMedia.previewUrl}
+          selectedName={selectedMedia.name}
+          fitToContent
+          fitMaxPercent={MOCKUP_MEDIA_FIT_PERCENT}
+          className="absolute aspect-4/3 rounded-lg shadow-md"
+          style={mediaFrameStyle}
+        />
+      ) : (
+        <div
+          aria-hidden="true"
+          className="drop-frame drop-frame--md absolute aspect-4/3 rounded-lg shadow-md"
+          style={mediaFrameStyle}
+        />
+      )}
     </button>
   );
 }

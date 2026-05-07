@@ -12,6 +12,11 @@ import { PreviewStage } from "@/components/preview-stage";
 import { StylePanel } from "@/components/style-panel";
 import { useObjectUrl } from "@/hooks/use-object-url";
 import { DEFAULT_FRAME_PRESET } from "@/lib/frame-presets";
+import {
+  DEFAULT_LAYOUT_PRESET_ID,
+  getLayoutPresetById,
+  type LayoutPresetId,
+} from "@/lib/layout-presets";
 import { exportMockupPng } from "@/lib/mockup-export";
 import { getImageFiles, type SelectedMedia } from "@/lib/media-types";
 
@@ -21,7 +26,13 @@ export function MockupBuilderShell() {
   const selectedPreviewUrl = useObjectUrl(selectedFile);
   const [frameBackgroundId, setFrameBackgroundId] = useState<string>(DEFAULT_FRAME_BACKGROUND_ID);
   const [framePreset, setFramePreset] = useState(DEFAULT_FRAME_PRESET);
+  const [selectedLayoutPresetId, setSelectedLayoutPresetId] =
+    useState<LayoutPresetId>(DEFAULT_LAYOUT_PRESET_ID);
   const frameBackground = getCachedFrameBackground(frameBackgroundId);
+  const selectedLayoutPreset = useMemo(
+    () => getLayoutPresetById(selectedLayoutPresetId),
+    [selectedLayoutPresetId]
+  );
   const selectedMedia = useMemo<SelectedMedia | null>(() => {
     if (!selectedFile || !selectedPreviewUrl) {
       return null;
@@ -63,14 +74,22 @@ export function MockupBuilderShell() {
           onMediaFiles={handleMediaFiles}
           frameBackground={frameBackground}
           framePreset={framePreset}
+          layoutPreset={selectedLayoutPreset}
         />
-        <ExportPanel frameBackground={frameBackground} onExport={handleExport} />
+        <ExportPanel
+          selectedMedia={selectedMedia}
+          frameBackground={frameBackground}
+          selectedLayoutPresetId={selectedLayoutPresetId}
+          onLayoutPresetChange={setSelectedLayoutPresetId}
+          onExport={handleExport}
+        />
       </div>
       <div aria-hidden="true" className="export-surface-host">
         <ExportMockupSurface
           selectedMedia={selectedMedia}
           frameBackground={frameBackground}
           framePreset={framePreset}
+          layoutPreset={selectedLayoutPreset}
           surfaceRef={exportRef}
         />
       </div>
