@@ -78,7 +78,12 @@ function SwatchButton({
       aria-pressed={isSelected}
       aria-label={swatch.label}
       onClick={() => onSelect(swatch.className)}
-      className={cn("frame-swatch", swatch.className, isSelected && "is-selected")}
-    />
+      className={cn(
+        "frame-swatch p-1",
+        isSelected && "is-selected shadow-[inset_0_0_0_2px_rgb(var(--color-text)/0.60)]"
+      )}
+    >
+      <span className={cn("block h-full w-full rounded-md", swatch.className)} />
+    </button>
   );
 }
