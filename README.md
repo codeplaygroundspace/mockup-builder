@@ -80,6 +80,29 @@ When adding a new frame background:
 - Add simple reusable CSS-authored backgrounds in `styles/frame-backgrounds.css`, then reference the class from `frame-background-groups.ts`.
 - Prefer stable ids for any data-backed swatch so future CSS class renames do not break saved selection state.
 
+## Project Structure
+
+```
+app/              # App Router entry points (layout.tsx, page.tsx, globals.css)
+components/       # UI components; co-locate sub-component folders (e.g. frame-tab-panel/)
+hooks/            # Custom React hooks (e.g. use-contained-image-fit.ts)
+lib/              # Pure utilities and configuration (frame-presets, mockup-export, layout helpers)
+styles/           # Shared CSS layers imported via globals.css
+public/           # Static assets served at the root URL
+```
+
+## State Management
+
+No external state library. State lives in React `useState`/`useReducer` inside components, hoisted to the nearest common ancestor when shared. `MockupBuilderShell` (`components/mockup-builder-shell.tsx`) is the top-level stateful component that owns selected background, frame ratio, and media source.
+
+## Assets
+
+Static files go in `public/` and are referenced as root-relative URLs (e.g. `/test-06.png`). Test images (`test-06.png`, `test-landscape.png`, `test-portrait.png`) are used for local development only. Frame background image URLs are defined in `components/frame-tab-panel/frame-background-groups.ts`.
+
+## Deployment
+
+Designed to deploy on [Vercel](https://vercel.com) (the default Next.js host). No custom server required — `npm run build` + `npm run start` works for self-hosting. Do not run `npm run build` during agent sessions (see Agent Workflow above).
+
 ## Future Refactor Ideas
 
 - Continue pruning and grouping the split files in `styles/` as shared UI patterns settle.

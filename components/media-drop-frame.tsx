@@ -2,10 +2,12 @@
 
 import { ImagePlus } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import type { ChangeEvent, CSSProperties, DragEvent } from "react";
+import { useCallback, useRef, useState } from "react";
+import type { ChangeEvent, CSSProperties } from "react";
 
 import { useContainedImageFit } from "@/hooks/use-contained-image-fit";
+import { useDragAndDropZone } from "@/hooks/use-drag-and-drop-zone";
+import { useObjectUrl } from "@/hooks/use-object-url";
 import type { Dimensions } from "@/lib/media-types";
 import { cn } from "@/lib/utils";
 
@@ -47,27 +49,41 @@ export function MediaDropFrame({
   onFiles,
 }: MediaDropFrameProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isDragActive, setIsDragActive] = useState(false);
-  const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
-  const [localSelectedName, setLocalSelectedName] = useState<string | null>(null);
+  const [localPreviewFile, setLocalPreviewFile] = useState<File | null>(null);
+  const localPreviewUrl = useObjectUrl(localPreviewFile);
+  const localSelectedName = localPreviewFile?.name ?? null;
   const isPreviewControlled = previewUrl !== undefined;
   const isSelectedNameControlled = selectedName !== undefined;
   const displayedPreviewUrl = isPreviewControlled ? previewUrl : localPreviewUrl;
   const displayedSelectedName = isSelectedNameControlled ? selectedName : localSelectedName;
+  const handleFiles = useCallback(
+    (fileList: FileList | null) => {
+      const imageFiles = Array.from(fileList ?? []).filter((file) =>
+        file.type.startsWith("image/")
+      );
+
+      if (imageFiles.length === 0) {
+        return;
+      }
+
+      const [firstFile] = imageFiles;
+      if (!isPreviewControlled) {
+        setLocalPreviewFile(firstFile);
+      }
+      onFiles?.(imageFiles);
+    },
+    [isPreviewControlled, onFiles]
+  );
+  const { isDragActive, handleDragEnter, handleDragOver, handleDragLeave, handleDrop } =
+    useDragAndDropZone<HTMLButtonElement>({
+      onDropFiles: handleFiles,
+    });
   const { fitStyle, setFrameElement } = useContainedImageFit({
     enabled: fitToContent,
     previewUrl: displayedPreviewUrl,
     maxPercent: fitMaxPercent,
     explicitBounds: fitBounds,
   });
-
-  useEffect(() => {
-    return () => {
-      if (localPreviewUrl) {
-        URL.revokeObjectURL(localPreviewUrl);
-      }
-    };
-  }, [localPreviewUrl]);
 
   const frameClassName = cn(
     "drop-frame",
@@ -83,46 +99,9 @@ export function MediaDropFrame({
     ...fitStyle,
   };
 
-  function handleFiles(fileList: FileList | null) {
-    const imageFiles = Array.from(fileList ?? []).filter((file) => file.type.startsWith("image/"));
-
-    if (imageFiles.length === 0) {
-      return;
-    }
-
-    const [firstFile] = imageFiles;
-    if (!isPreviewControlled) {
-      setLocalPreviewUrl(URL.createObjectURL(firstFile));
-      setLocalSelectedName(firstFile.name);
-    }
-    onFiles?.(imageFiles);
-  }
-
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     handleFiles(event.currentTarget.files);
     event.currentTarget.value = "";
-  }
-
-  function handleDragEnter(event: DragEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    setIsDragActive(true);
-  }
-
-  function handleDragOver(event: DragEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "copy";
-  }
-
-  function handleDragLeave(event: DragEvent<HTMLButtonElement>) {
-    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-      setIsDragActive(false);
-    }
-  }
-
-  function handleDrop(event: DragEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    setIsDragActive(false);
-    handleFiles(event.dataTransfer.files);
   }
 
   const emptyContent = (
