@@ -5,8 +5,9 @@ import { useState } from "react";
 
 import { FrameTabPanel } from "@/components/frame-tab-panel";
 import { MediaDropFrame } from "@/components/media-drop-frame";
-import { Section } from "@/components/section";
+import { Panel, PanelRow, PanelSection } from "@/components/panel";
 import { SegmentedControl } from "@/components/segmented-control";
+import { STYLE_SWATCHES, type StyleSwatchOption } from "@/components/style-swatches";
 import type { FramePreset } from "@/lib/frame-presets";
 import type { SelectedMedia } from "@/lib/media-types";
 import { cn } from "@/lib/utils";
@@ -22,25 +23,6 @@ type StylePanelProps = {
   onFramePresetChange: (preset: FramePreset) => void;
 };
 
-const STYLES: ReadonlyArray<{
-  name: string;
-  swatchClassName: string;
-  selected?: boolean;
-}> = [
-  { name: "Default", swatchClassName: "bg-zinc-100", selected: true },
-  { name: "Glass Light", swatchClassName: "bg-zinc-200/90" },
-  { name: "Glass Dark", swatchClassName: "bg-zinc-700/90" },
-  {
-    name: "Liquid...",
-    swatchClassName:
-      "bg-[conic-gradient(from_0deg,#ff7e5f,#feb47b,#ff7e5f)] [&>div]:bg-zinc-200/30",
-  },
-  { name: "Inset Light", swatchClassName: "bg-zinc-100" },
-  { name: "Inset Dark", swatchClassName: "bg-zinc-800" },
-  { name: "Outline", swatchClassName: "bg-transparent border-2 border-zinc-200" },
-  { name: "Border", swatchClassName: "bg-zinc-50 border border-zinc-300" },
-];
-
 export function StylePanel({
   selectedMedia,
   onMediaFiles,
@@ -52,8 +34,8 @@ export function StylePanel({
   const [activeMode, setActiveMode] = useState<(typeof BUILD_MODES)[number]>("Mockup");
 
   return (
-    <aside className="app-panel style-panel">
-      <div className="panel-row style-panel__topbar">
+    <Panel gap="compact">
+      <PanelRow>
         <button type="button" aria-label="Workspace" className="workspace-button">
           <span className="workspace-avatar">MB</span>
           <ChevronRight className="size-4 text-zinc-400" />
@@ -67,13 +49,12 @@ export function StylePanel({
           </span>
           <ChevronRight className="size-4 text-zinc-400" />
         </button>
-      </div>
+      </PanelRow>
 
       <SegmentedControl
         ariaLabel="Build mode"
         options={BUILD_MODES}
         value={activeMode}
-        className="style-panel__tabs"
         onValueChange={(value) => setActiveMode(value as (typeof BUILD_MODES)[number])}
       />
 
@@ -87,7 +68,7 @@ export function StylePanel({
           onFramePresetChange={onFramePresetChange}
         />
       )}
-    </aside>
+    </Panel>
   );
 }
 
@@ -97,11 +78,7 @@ function MockupTabPanel({
 }: Pick<StylePanelProps, "selectedMedia" | "onMediaFiles">) {
   return (
     <>
-      <button
-        type="button"
-        aria-label="Source type: Screenshot"
-        className="source-button style-panel__tab-header"
-      >
+      <button type="button" aria-label="Source type: Screenshot" className="source-button">
         <span aria-hidden className="source-button__thumb" />
         <span className="source-button__copy">
           <span className="text-sm font-medium">Screenshot</span>
@@ -110,7 +87,7 @@ function MockupTabPanel({
         <ChevronDown className="size-4 text-zinc-400" />
       </button>
 
-      <Section label="Media">
+      <PanelSection label="Media">
         <div className="panel-card media-picker-card">
           <div className="flex h-24 w-full items-center justify-center">
             <MediaDropFrame
@@ -128,38 +105,30 @@ function MockupTabPanel({
           </div>
           <p className="text-xs text-zinc-400">Drop media or click to choose</p>
         </div>
-      </Section>
+      </PanelSection>
 
-      <Section label="Style">
+      <PanelSection label="Style">
         <div className="swatch-grid">
-          {STYLES.map((style) => (
+          {STYLE_SWATCHES.map((style) => (
             <StyleSwatch key={style.name} {...style} />
           ))}
           <button type="button" aria-label="More styles" className="more-tile">
             <MoreHorizontal className="size-5" />
           </button>
         </div>
-      </Section>
+      </PanelSection>
 
-      <Section label="Effect">
+      <PanelSection label="Effect">
         <div className="panel-card panel-card--padded text-xs text-zinc-400">
           <ImagePlus className="mb-2 size-4" />
           Adjust shadow, blur, and reflection.
         </div>
-      </Section>
+      </PanelSection>
     </>
   );
 }
 
-function StyleSwatch({
-  name,
-  swatchClassName,
-  selected,
-}: {
-  name: string;
-  swatchClassName: string;
-  selected?: boolean;
-}) {
+function StyleSwatch({ name, swatchClassName, selected }: StyleSwatchOption) {
   return (
     <button
       type="button"

@@ -1,4 +1,4 @@
-/* Main application frame, side panels, sticky panel chrome, and stage toolbar. */
+/* Main application frame, side panels, and stage toolbar. */
 
 @layer components {
   .app-shell {
@@ -9,11 +9,11 @@
     background: rgb(var(--color-canvas));
   }
 
-  .app-panel {
-    --app-panel-width: clamp(13rem, 16vw, 14.25rem);
+  .panel {
+    --panel-width: clamp(13rem, 16vw, 14.25rem);
     display: flex;
     box-sizing: border-box;
-    width: var(--app-panel-width);
+    width: var(--panel-width);
     max-width: 14.25rem;
     flex-shrink: 0;
     flex-direction: column;
@@ -26,43 +26,12 @@
     color: rgb(var(--color-text));
   }
 
-  .app-panel::-webkit-scrollbar {
+  .panel::-webkit-scrollbar {
     display: none;
   }
 
-  .style-panel {
-    --style-panel-sticky-top: 0.75rem;
-    --style-panel-row-height: 2.75rem;
-    --style-panel-tabs-height: 2.5rem;
-    --style-panel-gap: 0.75rem;
+  .panel--compact {
     gap: 0.75rem;
-  }
-
-  .style-panel__topbar,
-  .style-panel__tabs,
-  .style-panel__tab-header {
-    position: sticky;
-    background: rgb(var(--color-panel));
-  }
-
-  .style-panel__topbar {
-    top: var(--style-panel-sticky-top);
-    z-index: 30;
-  }
-
-  .style-panel__tabs {
-    top: calc(
-      var(--style-panel-sticky-top) + var(--style-panel-row-height) + var(--style-panel-gap)
-    );
-    z-index: 29;
-  }
-
-  .style-panel__tab-header {
-    top: calc(
-      var(--style-panel-sticky-top) + var(--style-panel-row-height) + var(--style-panel-gap) +
-        var(--style-panel-tabs-height) + var(--style-panel-gap)
-    );
-    z-index: 28;
   }
 
   .panel-row {

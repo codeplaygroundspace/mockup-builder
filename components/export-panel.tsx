@@ -2,7 +2,7 @@ import { Columns2, Columns3, Copy, Settings2, Square, Upload } from "lucide-reac
 
 import { Button } from "@/components/button";
 import { MediaDropFrame } from "@/components/media-drop-frame";
-import { Section } from "@/components/section";
+import { Panel, PanelRow, PanelSection, PanelStack } from "@/components/panel";
 import { SegmentedControl } from "@/components/segmented-control";
 import { EXPORT_PANEL_MEDIA_WIDTH, LAYOUT_PRESET_MEDIA_WIDTH } from "@/lib/mockup-layout";
 import { cn } from "@/lib/utils";
@@ -24,8 +24,8 @@ type ExportPanelProps = {
 
 export function ExportPanel({ onExport }: ExportPanelProps) {
   return (
-    <aside className="app-panel">
-      <div className="panel-row">
+    <Panel>
+      <PanelRow>
         <Button
           variant="secondary"
           onClick={onExport}
@@ -41,7 +41,7 @@ export function ExportPanel({ onExport }: ExportPanelProps) {
         <Button variant="ghost" size="icon-md" aria-label="Export settings">
           <Settings2 />
         </Button>
-      </div>
+      </PanelRow>
 
       <div role="radiogroup" aria-label="Layout mode" className="layout-mode-group">
         <LayoutModeOption label="Single" icon={<Square className="size-4" />} active />
@@ -74,14 +74,14 @@ export function ExportPanel({ onExport }: ExportPanelProps) {
         <span className="text-xs text-zinc-300 tabular-nums">100%</span>
       </div>
 
-      <Section label="Layout Presets">
-        <div className="section-stack">
+      <PanelSection label="Layout Presets">
+        <PanelStack>
           {LAYOUT_PRESETS.map((preset, index) => (
             <LayoutPresetCard key={index} {...preset} />
           ))}
-        </div>
-      </Section>
-    </aside>
+        </PanelStack>
+      </PanelSection>
+    </Panel>
   );
 }
 

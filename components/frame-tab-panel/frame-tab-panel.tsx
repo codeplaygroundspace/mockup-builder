@@ -6,7 +6,7 @@ import { FrameOptionTile } from "./frame-option-tile";
 import { FRAME_SCENES } from "./frame-scenes";
 
 import { FrameRatioDropdown } from "@/components/frame-ratio-dropdown";
-import { Section } from "@/components/section";
+import { PanelSection, PanelStack } from "@/components/panel";
 import type { FramePreset } from "@/lib/frame-presets";
 
 type FrameTabPanelProps = {
@@ -23,22 +23,22 @@ export function FrameTabPanel({
   onFramePresetChange,
 }: FrameTabPanelProps) {
   return (
-    <div className="frame-tab-content">
+    <PanelStack className="frame-tab-content">
       <FrameRatioDropdown framePreset={framePreset} onFramePresetChange={onFramePresetChange} />
 
-      <Section label="Scene">
+      <PanelSection label="Scene">
         <div className="frame-option-grid frame-option-grid--three">
           {FRAME_SCENES.map((scene) => (
             <FrameOptionTile key={scene.label} {...scene} compact />
           ))}
         </div>
-      </Section>
+      </PanelSection>
 
       <FrameBackgroundLibrary
         groups={FRAME_BACKGROUND_GROUPS}
         selectedId={frameBackgroundId}
         onSelect={onFrameBackgroundChange}
       />
-    </div>
+    </PanelStack>
   );
 }
