@@ -13,7 +13,7 @@ import { StylePanel } from "@/components/style-panel";
 import { useObjectUrl } from "@/hooks/use-object-url";
 import { DEFAULT_FRAME_PRESET } from "@/lib/frame-presets";
 import { exportMockupPng } from "@/lib/mockup-export";
-import type { SelectedMedia } from "@/lib/media-types";
+import { getImageFiles, type SelectedMedia } from "@/lib/media-types";
 
 export function MockupBuilderShell() {
   const exportRef = useRef<HTMLDivElement>(null);
@@ -33,7 +33,7 @@ export function MockupBuilderShell() {
   }, [selectedFile, selectedPreviewUrl]);
 
   const handleMediaFiles = useCallback((files: File[]) => {
-    const [file] = files;
+    const [file] = getImageFiles(files);
 
     if (!file) {
       return;
@@ -66,7 +66,7 @@ export function MockupBuilderShell() {
           frameBackground={frameBackground}
           framePreset={framePreset}
         />
-        <ExportPanel onExport={handleExport} />
+        <ExportPanel frameBackground={frameBackground} onExport={handleExport} />
       </div>
       <div aria-hidden="true" className="export-surface-host">
         <ExportMockupSurface

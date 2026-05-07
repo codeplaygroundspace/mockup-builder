@@ -8,7 +8,7 @@ import type { ChangeEvent, CSSProperties } from "react";
 import { useContainedImageFit } from "@/hooks/use-contained-image-fit";
 import { useDragAndDropZone } from "@/hooks/use-drag-and-drop-zone";
 import { useObjectUrl } from "@/hooks/use-object-url";
-import type { Dimensions } from "@/lib/media-types";
+import { getImageFiles, type Dimensions } from "@/lib/media-types";
 import { cn } from "@/lib/utils";
 
 type DropFrameSize = "lg" | "md" | "sm";
@@ -58,9 +58,7 @@ export function MediaDropFrame({
   const displayedSelectedName = isSelectedNameControlled ? selectedName : localSelectedName;
   const handleFiles = useCallback(
     (fileList: FileList | null) => {
-      const imageFiles = Array.from(fileList ?? []).filter((file) =>
-        file.type.startsWith("image/")
-      );
+      const imageFiles = getImageFiles(fileList);
 
       if (imageFiles.length === 0) {
         return;

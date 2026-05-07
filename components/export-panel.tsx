@@ -1,6 +1,8 @@
 import { Columns2, Columns3, Copy, Settings2, Square, Upload } from "lucide-react";
 
 import { Button } from "@/components/button";
+import { getFrameBackgroundStyle } from "@/components/frame-tab-panel/frame-background-groups";
+import type { FrameBackgroundSwatch } from "@/components/frame-tab-panel/types";
 import { MediaDropFrame } from "@/components/media-drop-frame";
 import { Panel, PanelRow, PanelSection, PanelStack } from "@/components/panel";
 import { SegmentedControl } from "@/components/segmented-control";
@@ -19,10 +21,13 @@ const LAYOUT_PRESETS: ReadonlyArray<{
 ];
 
 type ExportPanelProps = {
+  frameBackground: FrameBackgroundSwatch;
   onExport?: () => void;
 };
 
-export function ExportPanel({ onExport }: ExportPanelProps) {
+export function ExportPanel({ frameBackground, onExport }: ExportPanelProps) {
+  const frameBackgroundStyle = getFrameBackgroundStyle(frameBackground);
+
   return (
     <Panel>
       <PanelRow>
@@ -57,7 +62,10 @@ export function ExportPanel({ onExport }: ExportPanelProps) {
         className="justify-start"
       />
 
-      <div className="mockup-surface mockup-surface--panel bg-frame-gradient-rouge">
+      <div
+        style={frameBackgroundStyle}
+        className={cn("mockup-surface mockup-surface--panel", frameBackground.className)}
+      >
         <MediaDropFrame
           size="md"
           primary="Drop or Paste"
@@ -77,7 +85,7 @@ export function ExportPanel({ onExport }: ExportPanelProps) {
       <PanelSection label="Layout Presets">
         <PanelStack>
           {LAYOUT_PRESETS.map((preset, index) => (
-            <LayoutPresetCard key={index} {...preset} />
+            <LayoutPresetCard key={index} frameBackground={frameBackground} {...preset} />
           ))}
         </PanelStack>
       </PanelSection>
@@ -107,20 +115,27 @@ function LayoutModeOption({
 }
 
 function LayoutPresetCard({
+  frameBackground,
   rotate,
   scale,
   selected,
 }: {
+  frameBackground: FrameBackgroundSwatch;
   rotate: number;
   scale: number;
   selected?: boolean;
 }) {
+  const frameBackgroundStyle = getFrameBackgroundStyle(frameBackground);
+
   return (
     <button
+      type="button"
       aria-pressed={selected}
       aria-label="Layout preset"
+      style={frameBackgroundStyle}
       className={cn(
-        "layout-preset-card bg-frame-gradient-rouge",
+        "layout-preset-card",
+        frameBackground.className,
         selected ? "ring-selected" : "ring-1 ring-zinc-800 hover:ring-zinc-700"
       )}
     >
