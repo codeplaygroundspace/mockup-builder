@@ -2,9 +2,11 @@
 
 import { ImagePlus } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, CSSProperties, DragEvent } from "react";
 
+import { useContainedImageFit } from "@/hooks/use-contained-image-fit";
+import type { Dimensions } from "@/lib/media-types";
 import { cn } from "@/lib/utils";
 
 type DropFrameSize = "lg" | "md" | "sm";
@@ -20,9 +22,10 @@ type MediaDropFrameProps = {
   ariaLabel?: string;
   previewUrl?: string | null;
   selectedName?: string | null;
+  previewSizes?: string;
   fitToContent?: boolean;
   fitMaxPercent?: number;
-  fitBounds?: { width: number; height: number } | null;
+  fitBounds?: Dimensions | null;
   onFiles?: (files: File[]) => void;
 };
 
@@ -37,33 +40,26 @@ export function MediaDropFrame({
   ariaLabel,
   previewUrl,
   selectedName,
+  previewSizes = "100vw",
   fitToContent = false,
   fitMaxPercent = 100,
   fitBounds,
   onFiles,
 }: MediaDropFrameProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const frameRef = useRef<HTMLElement | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
   const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
   const [localSelectedName, setLocalSelectedName] = useState<string | null>(null);
-  const [measuredImage, setMeasuredImage] = useState<{
-    previewUrl: string;
-    aspectRatio: number;
-  } | null>(null);
-  const [observedFitBounds, setObservedFitBounds] = useState<{
-    width: number;
-    height: number;
-  } | null>(null);
   const isPreviewControlled = previewUrl !== undefined;
   const isSelectedNameControlled = selectedName !== undefined;
   const displayedPreviewUrl = isPreviewControlled ? previewUrl : localPreviewUrl;
   const displayedSelectedName = isSelectedNameControlled ? selectedName : localSelectedName;
-  const imgAspectRatio =
-    measuredImage?.previewUrl === displayedPreviewUrl ? measuredImage.aspectRatio : null;
-  const setFrameElement = useCallback((node: HTMLButtonElement | HTMLDivElement | null) => {
-    frameRef.current = node;
-  }, []);
+  const { fitStyle, setFrameElement } = useContainedImageFit({
+    enabled: fitToContent,
+    previewUrl: displayedPreviewUrl,
+    maxPercent: fitMaxPercent,
+    explicitBounds: fitBounds,
+  });
 
   useEffect(() => {
     return () => {
@@ -72,67 +68,6 @@ export function MediaDropFrame({
       }
     };
   }, [localPreviewUrl]);
-
-  useEffect(() => {
-    if (!fitToContent || !displayedPreviewUrl) {
-      return;
-    }
-
-    let isCurrent = true;
-    const img = new window.Image();
-    img.onload = () => {
-      if (isCurrent && img.naturalWidth && img.naturalHeight) {
-        setMeasuredImage({
-          previewUrl: displayedPreviewUrl,
-          aspectRatio: img.naturalWidth / img.naturalHeight,
-        });
-      }
-    };
-    img.src = displayedPreviewUrl;
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [fitToContent, displayedPreviewUrl]);
-
-  useEffect(() => {
-    if (!fitToContent || !displayedPreviewUrl || fitBounds) {
-      return;
-    }
-
-    const parentElement = frameRef.current?.parentElement;
-    if (!parentElement || typeof ResizeObserver === "undefined") {
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-
-      if (width <= 0 || height <= 0) {
-        return;
-      }
-
-      setObservedFitBounds((currentBounds) => {
-        if (currentBounds?.width === width && currentBounds.height === height) {
-          return currentBounds;
-        }
-
-        return { width, height };
-      });
-    });
-
-    resizeObserver.observe(parentElement);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [fitToContent, displayedPreviewUrl, fitBounds]);
-
-  const resolvedFitBounds = fitBounds ?? observedFitBounds;
-  const fitDimensions =
-    fitToContent && imgAspectRatio !== null && resolvedFitBounds !== null
-      ? getContainedDimensions(imgAspectRatio, resolvedFitBounds, fitMaxPercent)
-      : null;
 
   const frameClassName = cn(
     "drop-frame",
@@ -145,14 +80,7 @@ export function MediaDropFrame({
 
   const containerStyle: CSSProperties = {
     ...style,
-    ...(fitToContent && imgAspectRatio !== null
-      ? {
-          aspectRatio: String(imgAspectRatio),
-          ...(fitDimensions !== null
-            ? { width: `${fitDimensions.width}px`, height: `${fitDimensions.height}px` }
-            : {}),
-        }
-      : {}),
+    ...fitStyle,
   };
 
   function handleFiles(fileList: FileList | null) {
@@ -215,7 +143,7 @@ export function MediaDropFrame({
           src={displayedPreviewUrl}
           alt=""
           fill
-          sizes="78vw"
+          sizes={previewSizes}
           unoptimized
         />
       ) : null}
@@ -250,21 +178,4 @@ export function MediaDropFrame({
       {content}
     </div>
   );
-}
-
-function getContainedDimensions(
-  aspectRatio: number,
-  bounds: { width: number; height: number },
-  maxPercent: number
-) {
-  const scale = maxPercent / 100;
-  const maxWidth = bounds.width * scale;
-  const maxHeight = bounds.height * scale;
-  const widthFromMaxHeight = maxHeight * aspectRatio;
-
-  if (widthFromMaxHeight <= maxWidth) {
-    return { width: widthFromMaxHeight, height: maxHeight };
-  }
-
-  return { width: maxWidth, height: maxWidth / aspectRatio };
 }

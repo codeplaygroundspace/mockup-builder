@@ -1,29 +1,17 @@
 "use client";
 
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ImagePlus,
-  MoreHorizontal,
-  Sparkles,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, ImagePlus, MoreHorizontal, Sparkles } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/components/button";
 import { FrameTabPanel } from "@/components/frame-tab-panel";
 import { MediaDropFrame } from "@/components/media-drop-frame";
 import { Section } from "@/components/section";
 import { SegmentedControl } from "@/components/segmented-control";
 import type { FramePreset } from "@/lib/frame-presets";
+import type { SelectedMedia } from "@/lib/media-types";
 import { cn } from "@/lib/utils";
 
 const BUILD_MODES = ["Mockup", "Frame"] as const;
-
-type SelectedMedia = {
-  previewUrl: string;
-  name: string;
-};
 
 type StylePanelProps = {
   selectedMedia: SelectedMedia | null;
@@ -121,19 +109,6 @@ function MockupTabPanel({
         </span>
         <ChevronDown className="size-4 text-zinc-400" />
       </button>
-
-      <div className="control-row-card">
-        <span aria-hidden className="icon-swatch size-9">
-          <Sparkles className="accent-icon size-4" />
-        </span>
-        <span className="flex-1 text-sm">Magic Preset</span>
-        <Button variant="ghost" size="icon-sm" aria-label="Previous preset">
-          <ChevronLeft />
-        </Button>
-        <Button variant="ghost" size="icon-sm" aria-label="Next preset">
-          <ChevronRight />
-        </Button>
-      </div>
 
       <Section label="Media">
         <div className="panel-card media-picker-card">
