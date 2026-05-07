@@ -1,5 +1,7 @@
 import type { CSSProperties, RefObject } from "react";
 
+import { getFrameBackgroundStyle } from "@/components/frame-tab-panel/frame-background-groups";
+import type { FrameBackgroundSwatch } from "@/components/frame-tab-panel/types";
 import { MediaDropFrame } from "@/components/media-drop-frame";
 import { getFrameAspectRatio, type FramePreset } from "@/lib/frame-presets";
 import type { Dimensions, SelectedMedia } from "@/lib/media-types";
@@ -9,13 +11,13 @@ import { cn } from "@/lib/utils";
 type PreviewMockupSurfaceProps = {
   selectedMedia: SelectedMedia | null;
   onMediaFiles: (files: File[]) => void;
-  frameBackgroundClassName: string;
+  frameBackground: FrameBackgroundSwatch;
   framePreset: FramePreset;
 };
 
 type ExportMockupSurfaceProps = {
   selectedMedia: SelectedMedia | null;
-  frameBackgroundClassName: string;
+  frameBackground: FrameBackgroundSwatch;
   framePreset: FramePreset;
   surfaceRef: RefObject<HTMLDivElement | null>;
 };
@@ -23,7 +25,7 @@ type ExportMockupSurfaceProps = {
 type MockupSurfaceProps = {
   selectedMedia: SelectedMedia | null;
   onMediaFiles?: (files: File[]) => void;
-  frameBackgroundClassName: string;
+  frameBackground: FrameBackgroundSwatch;
   framePreset: FramePreset;
   surfaceRef?: RefObject<HTMLDivElement | null>;
   className?: string;
@@ -35,14 +37,14 @@ type MockupSurfaceProps = {
 export function PreviewMockupSurface({
   selectedMedia,
   onMediaFiles,
-  frameBackgroundClassName,
+  frameBackground,
   framePreset,
 }: PreviewMockupSurfaceProps) {
   return (
     <MockupSurface
       selectedMedia={selectedMedia}
       onMediaFiles={onMediaFiles}
-      frameBackgroundClassName={frameBackgroundClassName}
+      frameBackground={frameBackground}
       framePreset={framePreset}
       className="mockup-surface--stage"
       interactive
@@ -52,14 +54,14 @@ export function PreviewMockupSurface({
 
 export function ExportMockupSurface({
   selectedMedia,
-  frameBackgroundClassName,
+  frameBackground,
   framePreset,
   surfaceRef,
 }: ExportMockupSurfaceProps) {
   return (
     <MockupSurface
       selectedMedia={selectedMedia}
-      frameBackgroundClassName={frameBackgroundClassName}
+      frameBackground={frameBackground}
       framePreset={framePreset}
       surfaceRef={surfaceRef}
       className="mockup-surface--export"
@@ -72,7 +74,7 @@ export function ExportMockupSurface({
 function MockupSurface({
   selectedMedia,
   onMediaFiles,
-  frameBackgroundClassName,
+  frameBackground,
   framePreset,
   surfaceRef,
   className,
@@ -81,12 +83,13 @@ function MockupSurface({
   fitBounds,
 }: MockupSurfaceProps) {
   const frameAspectRatio = getFrameAspectRatio(framePreset);
+  const frameBackgroundStyle = getFrameBackgroundStyle(frameBackground);
 
   return (
     <div
       ref={surfaceRef}
-      style={{ aspectRatio: frameAspectRatio, ...style }}
-      className={cn("mockup-surface", className, frameBackgroundClassName)}
+      style={{ aspectRatio: frameAspectRatio, ...frameBackgroundStyle, ...style }}
+      className={cn("mockup-surface", className, frameBackground.className)}
     >
       <MediaDropFrame
         size="lg"
