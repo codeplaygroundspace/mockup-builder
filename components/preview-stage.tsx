@@ -2,20 +2,21 @@ import { Command, Maximize2, MessageSquareMore, Redo2, Undo2 } from "lucide-reac
 
 import { Button } from "@/components/button";
 import { PreviewMockupSurface } from "@/components/mockup-surfaces";
+import type { FrameBackgroundSwatch } from "@/components/frame-tab-panel/types";
 import type { FramePreset } from "@/lib/frame-presets";
 import type { SelectedMedia } from "@/lib/media-types";
 
 type PreviewStageProps = {
   selectedMedia: SelectedMedia | null;
   onMediaFiles: (files: File[]) => void;
-  frameBackgroundClassName: string;
+  frameBackground: FrameBackgroundSwatch;
   framePreset: FramePreset;
 };
 
 export function PreviewStage({
   selectedMedia,
   onMediaFiles,
-  frameBackgroundClassName,
+  frameBackground,
   framePreset,
 }: PreviewStageProps) {
   return (
@@ -44,7 +45,7 @@ export function PreviewStage({
       <PreviewMockupSurface
         selectedMedia={selectedMedia}
         onMediaFiles={onMediaFiles}
-        frameBackgroundClassName={frameBackgroundClassName}
+        frameBackground={frameBackground}
         framePreset={framePreset}
       />
     </main>

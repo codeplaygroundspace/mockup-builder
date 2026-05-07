@@ -10,14 +10,14 @@ import { Section } from "@/components/section";
 import type { FramePreset } from "@/lib/frame-presets";
 
 type FrameTabPanelProps = {
-  frameBackgroundClassName: string;
-  onFrameBackgroundChange: (className: string) => void;
+  frameBackgroundId: string;
+  onFrameBackgroundChange: (id: string) => void;
   framePreset: FramePreset;
   onFramePresetChange: (preset: FramePreset) => void;
 };
 
 export function FrameTabPanel({
-  frameBackgroundClassName,
+  frameBackgroundId,
   onFrameBackgroundChange,
   framePreset,
   onFramePresetChange,
@@ -36,7 +36,7 @@ export function FrameTabPanel({
 
       <FrameBackgroundLibrary
         groups={FRAME_BACKGROUND_GROUPS}
-        selectedClassName={frameBackgroundClassName}
+        selectedId={frameBackgroundId}
         onSelect={onFrameBackgroundChange}
       />
     </div>

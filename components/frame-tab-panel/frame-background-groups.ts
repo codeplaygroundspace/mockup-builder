@@ -1,4 +1,53 @@
+import type { CSSProperties } from "react";
+
 import type { FrameBackgroundGroup, FrameBackgroundSwatch } from "./types";
+
+export const DEFAULT_FRAME_BACKGROUND_ID = "bg-frame-gradient-rouge";
+
+const SHARED_IMAGE_SWATCH_URL =
+  "https://images.unsplash.com/photo-1705447551093-7f1f038a313b?q=80&w=1139&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3";
+
+export function getFrameBackgroundSwatchId(swatch: FrameBackgroundSwatch) {
+  return swatch.id ?? swatch.className ?? swatch.label;
+}
+
+export function getFrameBackgroundSwatchById(id: string) {
+  for (const group of FRAME_BACKGROUND_GROUPS) {
+    const swatch = group.swatches.find((item) => getFrameBackgroundSwatchId(item) === id);
+
+    if (swatch) {
+      return swatch;
+    }
+  }
+
+  return null;
+}
+
+export function getFrameBackgroundStyle(swatch: FrameBackgroundSwatch): CSSProperties | undefined {
+  if (!swatch.imageUrl) {
+    return undefined;
+  }
+
+  return {
+    backgroundImage: `url("${swatch.imageUrl}")`,
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+  };
+}
+
+function imageSwatch(label: string, id: string, imageUrl: string): FrameBackgroundSwatch {
+  return { label, id, imageUrl };
+}
+
+function createNumberedImageSwatches(
+  labelPrefix: string,
+  idPrefix: string,
+  urls: ReadonlyArray<string>
+): ReadonlyArray<FrameBackgroundSwatch> {
+  return urls.map((imageUrl, index) =>
+    imageSwatch(`${labelPrefix} ${index + 1}`, `${idPrefix}-${index + 1}`, imageUrl)
+  );
+}
 
 const SOLID_SWATCHES: ReadonlyArray<FrameBackgroundSwatch> = [
   { label: "Soft White", className: "bg-frame-solid-soft-white" },
@@ -186,89 +235,53 @@ const MYSTIC_SWATCHES: ReadonlyArray<FrameBackgroundSwatch> = [
   },
 ];
 
-const ABSTRACT_SWATCHES: ReadonlyArray<FrameBackgroundSwatch> = [
-  { label: "Abstract Image 1", className: "bg-frame-abstract-image-1" },
-  { label: "Abstract Image 2", className: "bg-frame-abstract-image-2" },
-  { label: "Abstract Image 3", className: "bg-frame-abstract-image-3" },
-  { label: "Abstract Image 4", className: "bg-frame-abstract-image-4" },
-  { label: "Abstract Image 5", className: "bg-frame-abstract-image-5" },
-  { label: "Abstract Image 6", className: "bg-frame-abstract-image-6" },
-  { label: "Abstract Image 7", className: "bg-frame-abstract-image-7" },
-  { label: "Abstract Image 8", className: "bg-frame-abstract-image-8" },
-  { label: "Abstract Image 9", className: "bg-frame-abstract-image-9" },
-  { label: "Abstract Image 10", className: "bg-frame-abstract-image-10" },
-  { label: "Abstract Image 11", className: "bg-frame-abstract-image-11" },
-  { label: "Abstract Image 12", className: "bg-frame-abstract-image-12" },
-  { label: "Abstract Image 13", className: "bg-frame-abstract-image-13" },
-  { label: "Abstract Image 14", className: "bg-frame-abstract-image-14" },
-  { label: "Abstract Image 15", className: "bg-frame-abstract-image-15" },
-  { label: "Abstract Image 16", className: "bg-frame-abstract-image-16" },
-  { label: "Abstract Image 17", className: "bg-frame-abstract-image-17" },
-  { label: "Abstract Image 18", className: "bg-frame-abstract-image-18" },
-  { label: "Abstract Image 19", className: "bg-frame-abstract-image-19" },
-  { label: "Abstract Image 20", className: "bg-frame-abstract-image-20" },
-  { label: "Abstract Image 21", className: "bg-frame-abstract-image-21" },
-  { label: "Abstract Image 22", className: "bg-frame-abstract-image-22" },
-  { label: "Abstract Image 23", className: "bg-frame-abstract-image-23" },
-  { label: "Abstract Image 24", className: "bg-frame-abstract-image-24" },
-  { label: "Abstract Image 25", className: "bg-frame-abstract-image-25" },
-  { label: "Abstract Image 26", className: "bg-frame-abstract-image-26" },
-  { label: "Abstract Image 27", className: "bg-frame-abstract-image-27" },
+const ABSTRACT_IMAGE_URLS = [
+  "https://images.unsplash.com/photo-1758843407996-3596058bd71d?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1723329049559-54c95d0c9ef5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1694205116354-e2b3c9df820b?q=80&w=1337&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1662948496853-8ddd8cbcbab3?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1663208841736-f7da2ec6703c?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1667202374063-3c995a7517ae?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1667475593802-8d4e117a042f?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1668450433152-e56d7e8fe4ee?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1706045368128-b697e67b9c93?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1735575721650-f451a4d26db3?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1618367588411-d9a90fefa881?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1698044048214-541be00537c5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1719090024525-667c8fcf5bb9?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1676594037921-3d9f43a0e375?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1717810135803-830d2c4e0d43?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1665624220803-dc3587a06c43?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3",
+  "https://images.unsplash.com/photo-1665624184782-811c2b28d954?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1777789062011-5f57f624058e?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1777886290107-ef2e5b5ee047?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1739582458700-64e2c1ef702e?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3",
+  "https://images.unsplash.com/photo-1679822081971-1686a65e775c?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1702390649777-e2e6feee095f?q=80&w=1396&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1702390652030-d2ae9c613086?q=80&w=1247&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3",
+  "https://images.unsplash.com/photo-1673526759319-57811d44b600?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1723329190727-f39d502c28a2?q=80&w=1214&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3",
+  "https://images.unsplash.com/photo-1705445143459-068609678cfb?q=80&w=1139&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  SHARED_IMAGE_SWATCH_URL,
 ];
 
-const EARTH_SWATCHES: ReadonlyArray<FrameBackgroundSwatch> = [
-  { label: "Earth Image 1", className: "bg-frame-earth-image-1" },
-  { label: "Earth Image 2", className: "bg-frame-earth-image-2" },
-  { label: "Earth Image 3", className: "bg-frame-earth-image-3" },
-  { label: "Earth Image 4", className: "bg-frame-earth-image-4" },
-  { label: "Earth Image 5", className: "bg-frame-earth-image-5" },
-  { label: "Earth Image 6", className: "bg-frame-earth-image-6" },
-  { label: "Earth Image 7", className: "bg-frame-earth-image-7" },
-  { label: "Earth Image 8", className: "bg-frame-earth-image-8" },
-  { label: "Earth Image 9", className: "bg-frame-earth-image-9" },
-  { label: "Earth Image 10", className: "bg-frame-earth-image-10" },
-  { label: "Earth Image 11", className: "bg-frame-earth-image-11" },
-  { label: "Earth Image 12", className: "bg-frame-earth-image-12" },
-  { label: "Earth Image 13", className: "bg-frame-earth-image-13" },
-  { label: "Earth Image 14", className: "bg-frame-earth-image-14" },
-  { label: "Earth Image 15", className: "bg-frame-earth-image-15" },
-  { label: "Earth Image 16", className: "bg-frame-earth-image-16" },
-  { label: "Earth Image 17", className: "bg-frame-earth-image-17" },
-  { label: "Earth Image 18", className: "bg-frame-earth-image-18" },
-  { label: "Earth Image 19", className: "bg-frame-earth-image-19" },
-  { label: "Earth Image 20", className: "bg-frame-earth-image-20" },
-  { label: "Earth Image 21", className: "bg-frame-earth-image-21" },
-  { label: "Earth Image 22", className: "bg-frame-earth-image-22" },
-  { label: "Earth Image 23", className: "bg-frame-earth-image-23" },
-  { label: "Earth Image 24", className: "bg-frame-earth-image-24" },
-  { label: "Earth Image 25", className: "bg-frame-earth-image-25" },
-  { label: "Earth Image 26", className: "bg-frame-earth-image-26" },
-  { label: "Earth Image 27", className: "bg-frame-earth-image-27" },
-];
+const ABSTRACT_SWATCHES = createNumberedImageSwatches(
+  "Abstract Image",
+  "abstract-image",
+  ABSTRACT_IMAGE_URLS
+);
 
-const TEXTURE_SWATCHES: ReadonlyArray<FrameBackgroundSwatch> = [
-  { label: "Texture Image 1", className: "bg-frame-texture-image-1" },
-  { label: "Texture Image 2", className: "bg-frame-texture-image-2" },
-  { label: "Texture Image 3", className: "bg-frame-texture-image-3" },
-  { label: "Texture Image 4", className: "bg-frame-texture-image-4" },
-  { label: "Texture Image 5", className: "bg-frame-texture-image-5" },
-  { label: "Texture Image 6", className: "bg-frame-texture-image-6" },
-  { label: "Texture Image 7", className: "bg-frame-texture-image-7" },
-  { label: "Texture Image 8", className: "bg-frame-texture-image-8" },
-  { label: "Texture Image 9", className: "bg-frame-texture-image-9" },
-  { label: "Texture Image 10", className: "bg-frame-texture-image-10" },
-  { label: "Texture Image 11", className: "bg-frame-texture-image-11" },
-  { label: "Texture Image 12", className: "bg-frame-texture-image-12" },
-  { label: "Texture Image 13", className: "bg-frame-texture-image-13" },
-  { label: "Texture Image 14", className: "bg-frame-texture-image-14" },
-  { label: "Texture Image 15", className: "bg-frame-texture-image-15" },
-  { label: "Texture Image 16", className: "bg-frame-texture-image-16" },
-  { label: "Texture Image 17", className: "bg-frame-texture-image-17" },
-  { label: "Texture Image 18", className: "bg-frame-texture-image-18" },
-  { label: "Texture Image 19", className: "bg-frame-texture-image-19" },
-  { label: "Texture Image 20", className: "bg-frame-texture-image-20" },
-  { label: "Texture Image 21", className: "bg-frame-texture-image-21" },
-];
+const EARTH_SWATCHES = createNumberedImageSwatches("Earth Image", "earth-image", [
+  "https://images.unsplash.com/photo-1604089568991-a8e7a012dad2",
+  "https://images.unsplash.com/photo-1739519309312-c9d7ea2cb56b",
+  "https://images.unsplash.com/photo-1545243424-0ce743321e11",
+  ...Array.from({ length: 24 }, () => SHARED_IMAGE_SWATCH_URL),
+]);
+
+const TEXTURE_SWATCHES = createNumberedImageSwatches("Texture Image", "texture-image", [
+  "https://images.unsplash.com/photo-1735574334218-ad23c2a3074c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  ...Array.from({ length: 20 }, () => SHARED_IMAGE_SWATCH_URL),
+]);
 
 const GRADIENT_SWATCHES: ReadonlyArray<FrameBackgroundSwatch> = [
   { label: "Rouge", className: "bg-frame-gradient-rouge" },
@@ -349,22 +362,14 @@ export const FRAME_BACKGROUND_GROUPS: ReadonlyArray<FrameBackgroundGroup> = [
   {
     title: "Desktop",
     swatches: [
-      {
-        label: "Coast",
-        className: "bg-frame-desktop-coast",
-      },
-      {
-        label: "Mountain",
-        className: "bg-frame-desktop-mountain",
-      },
-      {
-        label: "Water",
-        className: "bg-frame-desktop-water",
-      },
-      {
-        label: "Road",
-        className: "bg-frame-desktop-road",
-      },
+      imageSwatch("Coast", "desktop-coast", "https://picsum.photos/seed/frame-coast/120/90"),
+      imageSwatch(
+        "Mountain",
+        "desktop-mountain",
+        "https://picsum.photos/seed/frame-mountain/120/90"
+      ),
+      imageSwatch("Water", "desktop-water", "https://picsum.photos/seed/frame-water/120/90"),
+      imageSwatch("Road", "desktop-road", "https://picsum.photos/seed/frame-road/120/90"),
     ],
   },
   {

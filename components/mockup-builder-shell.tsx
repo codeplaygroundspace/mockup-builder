@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ExportPanel } from "@/components/export-panel";
+import {
+  DEFAULT_FRAME_BACKGROUND_ID,
+  getFrameBackgroundSwatchById,
+} from "@/components/frame-tab-panel/frame-background-groups";
 import { ExportMockupSurface } from "@/components/mockup-surfaces";
 import { PreviewStage } from "@/components/preview-stage";
 import { StylePanel } from "@/components/style-panel";
@@ -10,16 +14,15 @@ import { DEFAULT_FRAME_PRESET } from "@/lib/frame-presets";
 import { exportMockupPng } from "@/lib/mockup-export";
 import type { SelectedMedia } from "@/lib/media-types";
 
-const DEFAULT_FRAME_BACKGROUND_CLASS = "bg-frame-gradient-rouge";
-
 export function MockupBuilderShell() {
   const selectedPreviewUrlRef = useRef<string | null>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
-  const [frameBackgroundClassName, setFrameBackgroundClassName] = useState<string>(
-    DEFAULT_FRAME_BACKGROUND_CLASS
-  );
+  const [frameBackgroundId, setFrameBackgroundId] = useState<string>(DEFAULT_FRAME_BACKGROUND_ID);
   const [framePreset, setFramePreset] = useState(DEFAULT_FRAME_PRESET);
+  const frameBackground =
+    getFrameBackgroundSwatchById(frameBackgroundId) ??
+    getFrameBackgroundSwatchById(DEFAULT_FRAME_BACKGROUND_ID)!;
 
   const handleMediaFiles = useCallback((files: File[]) => {
     const [file] = files;
@@ -58,15 +61,15 @@ export function MockupBuilderShell() {
         <StylePanel
           selectedMedia={selectedMedia}
           onMediaFiles={handleMediaFiles}
-          frameBackgroundClassName={frameBackgroundClassName}
-          onFrameBackgroundChange={setFrameBackgroundClassName}
+          frameBackgroundId={frameBackgroundId}
+          onFrameBackgroundChange={setFrameBackgroundId}
           framePreset={framePreset}
           onFramePresetChange={setFramePreset}
         />
         <PreviewStage
           selectedMedia={selectedMedia}
           onMediaFiles={handleMediaFiles}
-          frameBackgroundClassName={frameBackgroundClassName}
+          frameBackground={frameBackground}
           framePreset={framePreset}
         />
         <ExportPanel onExport={handleExport} />
@@ -74,7 +77,7 @@ export function MockupBuilderShell() {
       <div aria-hidden="true" className="export-surface-host">
         <ExportMockupSurface
           selectedMedia={selectedMedia}
-          frameBackgroundClassName={frameBackgroundClassName}
+          frameBackground={frameBackground}
           framePreset={framePreset}
           surfaceRef={exportRef}
         />

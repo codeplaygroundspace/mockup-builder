@@ -3,13 +3,13 @@ import type { FrameBackgroundGroup } from "./types";
 
 type FrameBackgroundLibraryProps = {
   groups: ReadonlyArray<FrameBackgroundGroup>;
-  selectedClassName: string;
-  onSelect: (className: string) => void;
+  selectedId: string;
+  onSelect: (id: string) => void;
 };
 
 export function FrameBackgroundLibrary({
   groups,
-  selectedClassName,
+  selectedId,
   onSelect,
 }: FrameBackgroundLibraryProps) {
   return (
@@ -22,7 +22,7 @@ export function FrameBackgroundLibrary({
           </div>
           <ExpandableSwatchGrid
             swatches={group.swatches}
-            selectedClassName={selectedClassName}
+            selectedId={selectedId}
             onSelect={onSelect}
           />
         </div>

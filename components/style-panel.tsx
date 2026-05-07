@@ -16,8 +16,8 @@ const BUILD_MODES = ["Mockup", "Frame"] as const;
 type StylePanelProps = {
   selectedMedia: SelectedMedia | null;
   onMediaFiles: (files: File[]) => void;
-  frameBackgroundClassName: string;
-  onFrameBackgroundChange: (className: string) => void;
+  frameBackgroundId: string;
+  onFrameBackgroundChange: (id: string) => void;
   framePreset: FramePreset;
   onFramePresetChange: (preset: FramePreset) => void;
 };
@@ -44,7 +44,7 @@ const STYLES: ReadonlyArray<{
 export function StylePanel({
   selectedMedia,
   onMediaFiles,
-  frameBackgroundClassName,
+  frameBackgroundId,
   onFrameBackgroundChange,
   framePreset,
   onFramePresetChange,
@@ -81,7 +81,7 @@ export function StylePanel({
         <MockupTabPanel selectedMedia={selectedMedia} onMediaFiles={onMediaFiles} />
       ) : (
         <FrameTabPanel
-          frameBackgroundClassName={frameBackgroundClassName}
+          frameBackgroundId={frameBackgroundId}
           onFrameBackgroundChange={onFrameBackgroundChange}
           framePreset={framePreset}
           onFramePresetChange={onFramePresetChange}

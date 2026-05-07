@@ -1,6 +1,8 @@
 export type FrameBackgroundSwatch = {
+  id?: string;
   label: string;
-  className: string;
+  className?: string;
+  imageUrl?: string;
 };
 
 export type FrameBackgroundGroup = {
