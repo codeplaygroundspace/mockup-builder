@@ -1,17 +1,14 @@
 "use client";
 
-import { toPng } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ExportPanel } from "@/components/export-panel";
-import { MockupSurface, PreviewStage } from "@/components/preview-stage";
+import { ExportMockupSurface } from "@/components/mockup-surfaces";
+import { PreviewStage } from "@/components/preview-stage";
 import { StylePanel } from "@/components/style-panel";
 import { DEFAULT_FRAME_PRESET } from "@/lib/frame-presets";
-
-type SelectedMedia = {
-  previewUrl: string;
-  name: string;
-};
+import { exportMockupPng } from "@/lib/mockup-export";
+import type { SelectedMedia } from "@/lib/media-types";
 
 const DEFAULT_FRAME_BACKGROUND_CLASS = "bg-mockup-gradient";
 
@@ -52,21 +49,8 @@ export function MockupBuilderShell() {
     const node = exportRef.current;
     if (!node) return;
 
-    await waitForExportRender(node);
-
-    const dataUrl = await toPng(node, {
-      cacheBust: false,
-      pixelRatio: 1,
-      width: framePreset.width,
-      height: framePreset.height,
-      canvasWidth: framePreset.width,
-      canvasHeight: framePreset.height,
-    });
-    const link = document.createElement("a");
-    link.download = `${framePreset.width}x${framePreset.height}_1X_mockup_builder.png`;
-    link.href = dataUrl;
-    link.click();
-  }, [framePreset.height, framePreset.width]);
+    await exportMockupPng({ node, framePreset });
+  }, [framePreset]);
 
   return (
     <>
@@ -88,40 +72,13 @@ export function MockupBuilderShell() {
         <ExportPanel onExport={handleExport} />
       </div>
       <div aria-hidden="true" className="export-surface-host">
-        <MockupSurface
+        <ExportMockupSurface
           selectedMedia={selectedMedia}
           frameBackgroundClassName={frameBackgroundClassName}
           framePreset={framePreset}
           surfaceRef={exportRef}
-          className="mockup-surface--export"
-          style={{ width: `${framePreset.width}px`, height: `${framePreset.height}px` }}
-          fitBounds={{ width: framePreset.width, height: framePreset.height }}
         />
       </div>
     </>
   );
-}
-
-async function waitForExportRender(node: HTMLElement) {
-  await nextAnimationFrame();
-
-  const images = Array.from(node.querySelectorAll("img"));
-  await Promise.all(
-    images.map((image) =>
-      image.complete
-        ? Promise.resolve()
-        : new Promise<void>((resolve) => {
-            image.addEventListener("load", () => resolve(), { once: true });
-            image.addEventListener("error", () => resolve(), { once: true });
-          })
-    )
-  );
-
-  await nextAnimationFrame();
-}
-
-function nextAnimationFrame() {
-  return new Promise<void>((resolve) => {
-    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-  });
 }

@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Aperture,
-  Ban,
-  Blocks,
-  CircleDashed,
-  Droplet,
-  Image as ImageIcon,
-  Pipette,
-  SlidersHorizontal,
-  Sparkle,
-} from "lucide-react";
+import { Ban } from "lucide-react";
 
 import { FrameRatioDropdown } from "@/components/frame-ratio-dropdown";
 import { Section } from "@/components/section";
@@ -29,13 +19,6 @@ type Swatch = {
   className: string;
 };
 
-const EFFECTS: ReadonlyArray<Tile> = [
-  { label: "Portrait", icon: <Aperture className="size-5" /> },
-  { label: "Watermark", icon: <Droplet className="size-5 fill-current" /> },
-  { label: "Bg Effects", icon: <CircleDashed className="size-5" /> },
-  { label: "VFX", icon: <Sparkle className="size-5 fill-current" /> },
-];
-
 const SCENES: ReadonlyArray<Tile> = [
   { label: "None", icon: <Ban className="size-5" />, selected: true },
   {
@@ -49,57 +32,6 @@ const SCENES: ReadonlyArray<Tile> = [
     icon: null,
     previewClassName:
       "bg-[radial-gradient(circle_at_25%_25%,#2563eb_0_18%,transparent_19%),radial-gradient(circle_at_72%_38%,#22d3ee_0_13%,transparent_14%),linear-gradient(135deg,#111827,#172554_55%,#2563eb)]",
-  },
-];
-
-const BACKGROUND_SOURCES: ReadonlyArray<Tile> = [
-  {
-    label: "Trans...",
-    icon: null,
-    previewClassName:
-      "bg-[conic-gradient(#3f3f46_25%,#18181b_0_50%,#3f3f46_0_75%,#18181b_0)] bg-[length:14px_14px]",
-  },
-  { label: "Color", icon: <Pipette className="size-5" /> },
-  { label: "Image", icon: <ImageIcon className="size-5" /> },
-  { label: "Unspl...", icon: <Blocks className="size-5" /> },
-];
-
-const MAGIC_SWATCHES: ReadonlyArray<Swatch> = [
-  { label: "Paper", className: "bg-zinc-50" },
-  { label: "Stone", className: "bg-stone-300" },
-  { label: "Walnut", className: "bg-[#342719]" },
-  {
-    label: "Clay",
-    className: "bg-[linear-gradient(135deg,#5d452c,#8b7357_50%,#4a3827)]",
-  },
-  { label: "Sunset", className: "bg-[linear-gradient(180deg,#ffff62,#fb923c)]" },
-  {
-    label: "Haze",
-    className: "bg-[radial-gradient(circle_at_30%_30%,#fff7d6,#c8b690_45%,#2f2a21)]",
-  },
-  {
-    label: "Mocha",
-    className: "bg-[radial-gradient(circle_at_38%_32%,#d1b58a,#3a2716_58%,#16110c)]",
-  },
-  {
-    label: "Olive",
-    className: "bg-[linear-gradient(135deg,#e9e5ba,#8f915f_55%,#55543f)]",
-  },
-  {
-    label: "Pearl",
-    className: "bg-[radial-gradient(circle_at_12%_20%,#f4f4f5,#f5f0e8_40%,#8b735f)]",
-  },
-  {
-    label: "Sand",
-    className: "bg-[radial-gradient(circle_at_75%_25%,#e7d8bd,#8d7356_45%,#31251c)]",
-  },
-  {
-    label: "Chrome",
-    className: "bg-[radial-gradient(circle_at_68%_30%,#f4f4f5,#8b8984_46%,#2a2722)]",
-  },
-  {
-    label: "Mist",
-    className: "bg-[linear-gradient(135deg,#e2e8f0,#a8a29e_55%,#5f554b)]",
   },
 ];
 
@@ -290,14 +222,6 @@ export function FrameTabPanel({
     <div className="frame-tab-content">
       <FrameRatioDropdown framePreset={framePreset} onFramePresetChange={onFramePresetChange} />
 
-      <Section label="Effects & Watermark">
-        <div className="frame-option-grid frame-option-grid--two">
-          {EFFECTS.map((effect) => (
-            <FrameOptionTile key={effect.label} {...effect} />
-          ))}
-        </div>
-      </Section>
-
       <Section label="Scene">
         <div className="frame-option-grid frame-option-grid--three">
           {SCENES.map((scene) => (
@@ -305,40 +229,6 @@ export function FrameTabPanel({
           ))}
         </div>
       </Section>
-
-      <Section label="Background">
-        <div className="frame-source-row">
-          {BACKGROUND_SOURCES.map((source) => (
-            <FrameSourceButton key={source.label} {...source} />
-          ))}
-        </div>
-      </Section>
-
-      <div className="magic-panel">
-        <div className="magic-panel__header">
-          <span className="magic-panel__title">
-            Magic <Sparkle className="size-3.5 fill-current text-rose-300" />
-          </span>
-          <button
-            type="button"
-            aria-label="Background filter settings"
-            className="magic-panel__settings"
-          >
-            <SlidersHorizontal className="size-4" />
-          </button>
-        </div>
-        <button type="button" aria-label="Magic background strength" className="magic-slider">
-          <span className="magic-slider__track">
-            <span className="magic-slider__fill" />
-          </span>
-        </button>
-        <SwatchGrid
-          swatches={MAGIC_SWATCHES}
-          dense
-          selectedClassName={frameBackgroundClassName}
-          onSelect={onFrameBackgroundChange}
-        />
-      </div>
 
       <div className="frame-library">
         {SWATCH_GROUPS.map((group) => (
@@ -386,28 +276,17 @@ function FrameOptionTile({
   );
 }
 
-function FrameSourceButton({ label, icon, previewClassName }: Tile) {
-  return (
-    <button type="button" className="style-swatch frame-source-button">
-      <span className={cn("frame-source-button__icon", previewClassName)}>{icon}</span>
-      <span className="truncate">{label}</span>
-    </button>
-  );
-}
-
 function SwatchGrid({
   swatches,
-  dense,
   selectedClassName,
   onSelect,
 }: {
   swatches: ReadonlyArray<Swatch>;
-  dense?: boolean;
   selectedClassName: string;
   onSelect: (className: string) => void;
 }) {
   return (
-    <div className={cn("frame-swatch-grid", dense && "frame-swatch-grid--dense")}>
+    <div className="frame-swatch-grid">
       {swatches.map((swatch) => {
         const isSelected = swatch.className === selectedClassName;
         return (
