@@ -4,6 +4,7 @@ import { Button } from "@/components/button";
 import { MediaDropFrame } from "@/components/media-drop-frame";
 import { Section } from "@/components/section";
 import { SegmentedControl } from "@/components/segmented-control";
+import { EXPORT_PANEL_MEDIA_WIDTH, LAYOUT_PRESET_MEDIA_WIDTH } from "@/lib/mockup-layout";
 import { cn } from "@/lib/utils";
 
 const LAYOUT_PRESETS: ReadonlyArray<{
@@ -61,7 +62,7 @@ export function ExportPanel({ onExport }: ExportPanelProps) {
           size="md"
           primary="Drop or Paste"
           secondary="Images & Videos"
-          className="aspect-4/3 w-[72%] rounded-xl"
+          className={cn("aspect-4/3 rounded-xl", EXPORT_PANEL_MEDIA_WIDTH)}
         />
       </div>
 
@@ -127,7 +128,7 @@ function LayoutPresetCard({
         size="md"
         primary="Drop or Paste"
         secondary="Images & Videos"
-        className="aspect-4/3 w-[68%] rounded-lg shadow-md"
+        className={cn("aspect-4/3 rounded-lg shadow-md", LAYOUT_PRESET_MEDIA_WIDTH)}
         style={{ transform: `rotate(${rotate}deg) scale(${scale})` }}
       />
     </button>
