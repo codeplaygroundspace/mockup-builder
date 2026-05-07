@@ -4,4 +4,3 @@ export const MOCKUP_EXPORT_SCALE = 1;
 export const MOCKUP_EXPORT_BASENAME = "mockup_builder";
 
 export const EXPORT_PANEL_MEDIA_WIDTH = "w-[72%]";
-export const LAYOUT_PRESET_MEDIA_WIDTH = "w-[68%]";

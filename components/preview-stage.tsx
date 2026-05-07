@@ -4,6 +4,7 @@ import { Button } from "@/components/button";
 import { PreviewMockupSurface } from "@/components/mockup-surfaces";
 import type { FrameBackgroundSwatch } from "@/components/frame-tab-panel/types";
 import type { FramePreset } from "@/lib/frame-presets";
+import type { LayoutPreset } from "@/lib/layout-presets";
 import type { SelectedMedia } from "@/lib/media-types";
 
 type PreviewStageProps = {
@@ -11,6 +12,7 @@ type PreviewStageProps = {
   onMediaFiles: (files: File[]) => void;
   frameBackground: FrameBackgroundSwatch;
   framePreset: FramePreset;
+  layoutPreset: LayoutPreset;
 };
 
 export function PreviewStage({
@@ -18,6 +20,7 @@ export function PreviewStage({
   onMediaFiles,
   frameBackground,
   framePreset,
+  layoutPreset,
 }: PreviewStageProps) {
   return (
     <main className="stage">
@@ -47,6 +50,7 @@ export function PreviewStage({
         onMediaFiles={onMediaFiles}
         frameBackground={frameBackground}
         framePreset={framePreset}
+        layoutPreset={layoutPreset}
       />
     </main>
   );
