@@ -4,6 +4,7 @@ import { getFrameBackgroundStyle } from "@/components/frame-tab-panel/frame-back
 import type { FrameBackgroundSwatch } from "@/components/frame-tab-panel/types";
 import { getFrameAspectRatio } from "@/components/frame-preset-ui";
 import { MediaDropFrame } from "@/components/media-drop-frame";
+import type { StyleSwatchOption } from "@/components/style-swatches";
 import type { FramePreset } from "@/lib/frame-presets";
 import { getLayoutPresetTransform, type LayoutPreset } from "@/lib/layout-presets";
 import type { Dimensions, SelectedMedia } from "@/lib/media-types";
@@ -16,6 +17,7 @@ type PreviewMockupSurfaceProps = {
   frameBackground: FrameBackgroundSwatch;
   framePreset: FramePreset;
   layoutPreset: LayoutPreset;
+  borderStyle: StyleSwatchOption;
 };
 
 type ExportMockupSurfaceProps = {
@@ -23,6 +25,7 @@ type ExportMockupSurfaceProps = {
   frameBackground: FrameBackgroundSwatch;
   framePreset: FramePreset;
   layoutPreset: LayoutPreset;
+  borderStyle: StyleSwatchOption;
   surfaceRef: RefObject<HTMLDivElement | null>;
 };
 
@@ -32,6 +35,7 @@ type MockupSurfaceProps = {
   frameBackground: FrameBackgroundSwatch;
   framePreset: FramePreset;
   layoutPreset: LayoutPreset;
+  borderStyle: StyleSwatchOption;
   surfaceRef?: RefObject<HTMLDivElement | null>;
   className?: string;
   style?: CSSProperties;
@@ -45,6 +49,7 @@ export function PreviewMockupSurface({
   frameBackground,
   framePreset,
   layoutPreset,
+  borderStyle,
 }: PreviewMockupSurfaceProps) {
   return (
     <MockupSurface
@@ -53,6 +58,7 @@ export function PreviewMockupSurface({
       frameBackground={frameBackground}
       framePreset={framePreset}
       layoutPreset={layoutPreset}
+      borderStyle={borderStyle}
       className="mockup-surface--stage"
       interactive
     />
@@ -64,6 +70,7 @@ export function ExportMockupSurface({
   frameBackground,
   framePreset,
   layoutPreset,
+  borderStyle,
   surfaceRef,
 }: ExportMockupSurfaceProps) {
   return (
@@ -72,6 +79,7 @@ export function ExportMockupSurface({
       frameBackground={frameBackground}
       framePreset={framePreset}
       layoutPreset={layoutPreset}
+      borderStyle={borderStyle}
       surfaceRef={surfaceRef}
       className="mockup-surface--export"
       style={{ width: `${framePreset.width}px`, height: `${framePreset.height}px` }}
@@ -86,6 +94,7 @@ function MockupSurface({
   frameBackground,
   framePreset,
   layoutPreset,
+  borderStyle,
   surfaceRef,
   className,
   style,
@@ -123,7 +132,7 @@ function MockupSurface({
           transition: "transform 0.125s linear",
           willChange: "transform",
         }}
-        className="rounded-2xl shadow-2xl"
+        className={cn("mockup-border-frame", borderStyle.frameClassName)}
       />
     </div>
   );

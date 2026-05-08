@@ -45,7 +45,7 @@ Frame background options are split between typed configuration and CSS, dependin
 - `components/frame-tab-panel/frame-background-groups.ts` is the source of truth for picker groups and swatches.
 - `components/frame-tab-panel/types.ts` defines each swatch as an id plus either a CSS `className`, an `imageUrl`, or both.
 - `styles/frame-backgrounds.css` contains CSS-authored backgrounds such as solids, gradients, glass, cosmic, and mystic recipes.
-- URL-only image categories such as Desktop, Abstract, Earth, and Texture live as TypeScript data and are rendered through inline background styles.
+- URL-only image categories such as Abstract live as TypeScript data and are rendered through inline background styles.
 
 Selection state is stored as a stable background id in `components/mockup-builder-shell.tsx`. The selected id is resolved with `getFrameBackgroundSwatchById`, then passed to both the preview and export mockup surfaces. This keeps the picker, stage preview, and export surface using the same selected background object.
 

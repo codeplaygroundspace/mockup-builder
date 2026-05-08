@@ -1,20 +1,81 @@
 export type StyleSwatchOption = {
+  id: string;
   name: string;
-  swatchClassName: string;
+  thumbnailUrl: string;
+  frameClassName?: string;
   selected?: boolean;
 };
 
 export const STYLE_SWATCHES: ReadonlyArray<StyleSwatchOption> = [
-  { name: "Default", swatchClassName: "bg-zinc-100", selected: true },
-  { name: "Glass Light", swatchClassName: "bg-zinc-200/90" },
-  { name: "Glass Dark", swatchClassName: "bg-zinc-700/90" },
   {
-    name: "Liquid...",
-    swatchClassName:
-      "bg-[conic-gradient(from_0deg,#ff7e5f,#feb47b,#ff7e5f)] [&>div]:bg-zinc-200/30",
+    id: "default",
+    name: "Default",
+    thumbnailUrl: "/border-styles/default.png",
+    frameClassName: "mockup-border-default",
+    selected: true,
   },
-  { name: "Inset Light", swatchClassName: "bg-zinc-100" },
-  { name: "Inset Dark", swatchClassName: "bg-zinc-800" },
-  { name: "Outline", swatchClassName: "bg-transparent border-2 border-zinc-200" },
-  { name: "Border", swatchClassName: "bg-zinc-50 border border-zinc-300" },
+  {
+    id: "card",
+    name: "Card",
+    thumbnailUrl: "/border-styles/card.png",
+    frameClassName: "mockup-border-card",
+  },
+  {
+    id: "glass-light",
+    name: "Glass Light",
+    thumbnailUrl: "/border-styles/glass-light.png",
+    frameClassName: "mockup-border-glass-light",
+  },
+  {
+    id: "glass-dark",
+    name: "Glass Dark",
+    thumbnailUrl: "/border-styles/glass-dark.png",
+    frameClassName: "mockup-border-glass-dark",
+  },
+  {
+    id: "liquid-glass",
+    name: "Liquid Glass",
+    thumbnailUrl: "/border-styles/liquid-glass.png",
+    frameClassName: "mockup-border-liquid-glass",
+  },
+  {
+    id: "inset-light",
+    name: "Inset Light",
+    thumbnailUrl: "/border-styles/inset-light.png",
+    frameClassName: "mockup-border-inset-light",
+  },
+  {
+    id: "inset-dark",
+    name: "Inset Dark",
+    thumbnailUrl: "/border-styles/inset-dark.png",
+    frameClassName: "mockup-border-inset-dark",
+  },
+  {
+    id: "outline",
+    name: "Outline",
+    thumbnailUrl: "/border-styles/outline.png",
+    frameClassName: "mockup-border-outline",
+  },
+  {
+    id: "border",
+    name: "Border",
+    thumbnailUrl: "/border-styles/border.png",
+    frameClassName: "mockup-border-border",
+  },
+  {
+    id: "retro",
+    name: "Retro",
+    thumbnailUrl: "/border-styles/retro.png",
+    frameClassName: "mockup-border-retro",
+  },
 ];
+
+export type BorderStyleId = (typeof STYLE_SWATCHES)[number]["id"];
+
+export const DEFAULT_BORDER_STYLE_ID: BorderStyleId = "default";
+
+export function getBorderStyleById(id: BorderStyleId): StyleSwatchOption {
+  return (
+    STYLE_SWATCHES.find((style) => style.id === id) ?? (STYLE_SWATCHES[0] as StyleSwatchOption)
+  );
+}

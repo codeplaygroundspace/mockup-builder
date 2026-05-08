@@ -10,6 +10,11 @@ import {
 import { ExportMockupSurface } from "@/components/mockup-surfaces";
 import { PreviewStage } from "@/components/preview-stage";
 import { StylePanel } from "@/components/style-panel";
+import {
+  DEFAULT_BORDER_STYLE_ID,
+  getBorderStyleById,
+  type BorderStyleId,
+} from "@/components/style-swatches";
 import { useObjectUrl } from "@/hooks/use-object-url";
 import { DEFAULT_FRAME_PRESET } from "@/lib/frame-presets";
 import {
@@ -26,9 +31,12 @@ export function MockupBuilderShell() {
   const selectedPreviewUrl = useObjectUrl(selectedFile);
   const [frameBackgroundId, setFrameBackgroundId] = useState<string>(DEFAULT_FRAME_BACKGROUND_ID);
   const [framePreset, setFramePreset] = useState(DEFAULT_FRAME_PRESET);
+  const [selectedBorderStyleId, setSelectedBorderStyleId] =
+    useState<BorderStyleId>(DEFAULT_BORDER_STYLE_ID);
   const [selectedLayoutPresetId, setSelectedLayoutPresetId] =
     useState<LayoutPresetId>(DEFAULT_LAYOUT_PRESET_ID);
   const frameBackground = getCachedFrameBackground(frameBackgroundId);
+  const selectedBorderStyle = getBorderStyleById(selectedBorderStyleId);
   const selectedLayoutPreset = useMemo(
     () => getLayoutPresetById(selectedLayoutPresetId),
     [selectedLayoutPresetId]
@@ -68,6 +76,8 @@ export function MockupBuilderShell() {
           onFrameBackgroundChange={setFrameBackgroundId}
           framePreset={framePreset}
           onFramePresetChange={setFramePreset}
+          selectedBorderStyleId={selectedBorderStyleId}
+          onBorderStyleChange={setSelectedBorderStyleId}
         />
         <PreviewStage
           selectedMedia={selectedMedia}
@@ -75,6 +85,7 @@ export function MockupBuilderShell() {
           frameBackground={frameBackground}
           framePreset={framePreset}
           layoutPreset={selectedLayoutPreset}
+          borderStyle={selectedBorderStyle}
         />
         <ExportPanel
           selectedMedia={selectedMedia}
@@ -90,6 +101,7 @@ export function MockupBuilderShell() {
           frameBackground={frameBackground}
           framePreset={framePreset}
           layoutPreset={selectedLayoutPreset}
+          borderStyle={selectedBorderStyle}
           surfaceRef={exportRef}
         />
       </div>

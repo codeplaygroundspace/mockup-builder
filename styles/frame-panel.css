@@ -1,4 +1,4 @@
-/* Frame tab layout, ratio menu, frame option tiles, and background swatch library. */
+/* Frame tab layout, ratio menu, and background swatch library. */
 
 @layer components {
   .frame-tab-content {
@@ -13,8 +13,20 @@
   }
 
   .frame-ratio-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgb(var(--color-panel-muted));
+    padding: 0.5rem;
+    text-align: left;
+    transition-property: background-color;
+    transition-duration: 150ms;
     width: 100%;
     border-radius: 1rem;
+  }
+
+  .frame-ratio-button:hover {
+    background: rgb(var(--color-panel-active));
   }
 
   .frame-ratio-button__icon {
@@ -117,55 +129,6 @@
   .frame-ratio-option.is-selected .frame-ratio-option__preview {
     border-color: rgb(244 244 245);
     box-shadow: 0 0 0 1px rgb(244 244 245 / 0.7);
-  }
-
-  .frame-option-grid {
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .frame-option-grid--three {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .frame-option-tile {
-    min-width: 0;
-  }
-
-  .frame-option-tile__preview {
-    position: relative;
-    display: grid;
-    width: 100%;
-    height: 2.75rem;
-    place-items: center;
-    overflow: hidden;
-    border-radius: 0.75rem;
-    background: rgb(var(--color-panel-muted));
-    outline: 1px solid transparent;
-    outline-offset: -1px;
-    transition-property: background-color, outline-color;
-    transition-duration: 150ms;
-  }
-
-  .frame-option-tile--compact .frame-option-tile__preview {
-    height: 2.75rem;
-  }
-
-  .frame-option-tile.is-selected .frame-option-tile__preview {
-    outline-color: rgb(244 244 245 / 0.9);
-    box-shadow: inset 0 0 0 1px rgb(9 9 11);
-  }
-
-  .frame-option-tile__icon {
-    color: rgb(228 228 231);
-  }
-
-  .frame-option-tile__label {
-    display: block;
-    margin-top: 0.375rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .frame-library-group__header {
