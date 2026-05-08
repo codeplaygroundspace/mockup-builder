@@ -291,18 +291,6 @@ const ABSTRACT_SWATCHES = createNumberedImageSwatches(
   ABSTRACT_IMAGE_URLS
 );
 
-const EARTH_SWATCHES = createNumberedImageSwatches("Earth Image", "earth-image", [
-  "https://images.unsplash.com/photo-1604089568991-a8e7a012dad2",
-  "https://images.unsplash.com/photo-1739519309312-c9d7ea2cb56b",
-  "https://images.unsplash.com/photo-1545243424-0ce743321e11",
-  ...Array.from({ length: 24 }, () => SHARED_IMAGE_SWATCH_URL),
-]);
-
-const TEXTURE_SWATCHES = createNumberedImageSwatches("Texture Image", "texture-image", [
-  "https://images.unsplash.com/photo-1735574334218-ad23c2a3074c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  ...Array.from({ length: 20 }, () => SHARED_IMAGE_SWATCH_URL),
-]);
-
 const GRADIENT_SWATCHES: ReadonlyArray<FrameBackgroundSwatch> = [
   { label: "Rouge", className: "bg-frame-gradient-rouge" },
   {
@@ -360,10 +348,6 @@ const GRADIENT_SWATCHES: ReadonlyArray<FrameBackgroundSwatch> = [
 
 export const FRAME_BACKGROUND_GROUPS: ReadonlyArray<FrameBackgroundGroup> = [
   {
-    title: "Solid",
-    swatches: SOLID_SWATCHES,
-  },
-  {
     title: "Gradient",
     swatches: GRADIENT_SWATCHES,
   },
@@ -380,28 +364,11 @@ export const FRAME_BACKGROUND_GROUPS: ReadonlyArray<FrameBackgroundGroup> = [
     swatches: MYSTIC_SWATCHES,
   },
   {
-    title: "Desktop",
-    swatches: [
-      imageSwatch("Coast", "desktop-coast", "https://picsum.photos/seed/frame-coast/120/90"),
-      imageSwatch(
-        "Mountain",
-        "desktop-mountain",
-        "https://picsum.photos/seed/frame-mountain/120/90"
-      ),
-      imageSwatch("Water", "desktop-water", "https://picsum.photos/seed/frame-water/120/90"),
-      imageSwatch("Road", "desktop-road", "https://picsum.photos/seed/frame-road/120/90"),
-    ],
-  },
-  {
     title: "Abstract",
     swatches: ABSTRACT_SWATCHES,
   },
   {
-    title: "Earth",
-    swatches: EARTH_SWATCHES,
-  },
-  {
-    title: "Texture",
-    swatches: TEXTURE_SWATCHES,
+    title: "Solid",
+    swatches: SOLID_SWATCHES,
   },
 ];

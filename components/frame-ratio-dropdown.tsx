@@ -18,7 +18,7 @@ export function FrameRatioDropdown({ framePreset, onFramePresetChange }: FrameRa
       <DropdownTrigger
         aria-label={`Frame size preset: ${framePreset.name}`}
         aria-haspopup="listbox"
-        className="source-button frame-ratio-button"
+        className="frame-ratio-button"
       >
         <span
           aria-hidden
